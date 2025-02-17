@@ -113,7 +113,7 @@ nav {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(15px);
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-    position: fixed;
+    /* position: fixed; */
     width: 100%;
     top: 0;
     left: 0;
