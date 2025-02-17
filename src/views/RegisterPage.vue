@@ -78,20 +78,25 @@ export default {
         const userId = userCredential.user.uid;
         const newReferralCode = generateReferralCode();
 
+        console.log("User Registered:", userId, email.value);
+        console.log("Referral Code Used:", referralCode.value);
+
+
         // Store user data in Firebase
         await createUserDocument(userId, {
           name: name.value,
           email: email.value,
-          country: country.value, // Add Country to Firebase
+          country: country.value,
           referralCode: newReferralCode,
           referralUsed: referralCode.value || '',
           referredUsers: [],
-          coins: 0
+          coinBalance: 0
         });
 
         // Handle Referral System
         if (referralCode.value) {
-          await updateReferralSystem(referralCode.value, userId);
+          console.log("Updating Referral System for", referralCode.value);
+          await updateReferralSystem(referralCode.value, userId, email.value);
         }
 
         // Redirect after successful registration
@@ -110,7 +115,8 @@ export default {
 .register-container {
   width: 100%;
   max-width: 400px;
-  margin: 20px auto; /* Add margin to top */
+  margin: 20px auto;
+  /* Add margin to top */
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
