@@ -8,7 +8,11 @@
 
     <h3>People who joined using your code:</h3>
     <ul>
-      <li v-for="refUser in referredUsers" :key="refUser.uid">
+      <!-- <li v-for="refUser in referredUsers" :key="refUser.uid"> -->
+
+      <li v-for="(refUser, index) in referredUsers" :key="refUser.uid">
+        <strong>S.No:</strong> {{ index + 1 }} <br />
+
         <strong>Name:</strong> {{ refUser.name }} <br />
         <strong>Country:</strong> {{ refUser.country }} <br />
         <strong>Email:</strong> {{ refUser.email }} <br />
