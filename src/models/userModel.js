@@ -1,6 +1,5 @@
 import { db } from '../firebase';
-import { doc, setDoc, updateDoc, arrayUnion, increment, getDoc } from 'firebase/firestore';
-
+import { doc, setDoc, updateDoc, arrayUnion, increment, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 // Create a new user in Firestore
 const createUserDocument = async (userId, userDetails) => {
   try {
@@ -22,28 +21,60 @@ const createUserDocument = async (userId, userDetails) => {
 };
 
 // Update referral system
+// const updateReferralSystem = async (referralCode, newUserId, newUserEmail) => {
+//   try {
+//     const referrerDocRef = doc(db, 'users', referralCode);
+//     const referrerDocSnap = await getDoc(referrerDocRef);
+
+//     if (referrerDocSnap.exists()) {
+//       // Add the new user to the referrer's referredUsers list with more details
+//       await updateDoc(referrerDocRef, {
+//         referredUsers: arrayUnion({
+//           uid: newUserId,
+//           email: newUserEmail,
+//           coinBalance: 0,  // New user starts with 0 coins, can be updated later
+//         }),
+//         coinBalance: increment(25)  // Reward referrer with 25 coins for the referral
+//       });
+//     } else {
+//       console.error("Referrer not found with code: ", referralCode);
+//     }
+//   } catch (error) {
+//     console.error("Error updating referral: ", error);
+//   }
+// };
+
 const updateReferralSystem = async (referralCode, newUserId, newUserEmail) => {
   try {
-    const referrerDocRef = doc(db, 'users', referralCode);
-    const referrerDocSnap = await getDoc(referrerDocRef);
+    // Query to find the referrer based on the referralCode
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('referralCode', '==', referralCode));
+    const querySnapshot = await getDocs(q);
 
-    if (referrerDocSnap.exists()) {
-      // Add the new user to the referrer's referredUsers list with more details
+    if (!querySnapshot.empty) {
+      // Assuming referralCode is unique, take the first matching document
+      const referrerDoc = querySnapshot.docs[0];
+      const referrerDocRef = doc(db, 'users', referrerDoc.id);
+
+      // Add the new user to the referrer's referredUsers list
       await updateDoc(referrerDocRef, {
         referredUsers: arrayUnion({
           uid: newUserId,
           email: newUserEmail,
-          coinBalance: 0,  // New user starts with 0 coins, can be updated later
+          coinBalance: 0, // New user starts with 0 coins
         }),
-        coinBalance: increment(25)  // Reward referrer with 25 coins for the referral
+        coinBalance: increment(25) // Reward referrer with 25 coins
       });
+
+      console.log('Referral system updated successfully.');
     } else {
-      console.error("Referrer not found with code: ", referralCode);
+      console.error('No user found with the provided referral code.');
     }
   } catch (error) {
-    console.error("Error updating referral: ", error);
+    console.error('Error updating referral system:', error);
   }
 };
+
 
 // Update coin balance
 const updateCoinBalance = async (userId, amount) => {
