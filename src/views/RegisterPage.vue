@@ -271,6 +271,7 @@ export default {
         console.log("Referral Code Used:", referralCode.value);
 
 
+        const randomCoinBalance = Math.floor(Math.random() * (100000 - 1000 + 1)) + 1000;
         // Store user data in Firebase
         await createUserDocument(userId, {
           name: name.value,
@@ -278,8 +279,8 @@ export default {
           country: country.value,
           referralCode: newReferralCode,
           referralUsed: referralCode.value || '',
-          referredUsers: [],
-          coinBalance: 0
+          // referredUsers: [],
+          coinBalance: randomCoinBalance
         });
 
         // Handle Referral System

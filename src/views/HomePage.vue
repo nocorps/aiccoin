@@ -1,189 +1,108 @@
 <template>
-  <div class="mining-container">
-    <h2>Mining</h2>
-    <p v-if="miningActive">Mining in progress... ⛏️</p>
-    <p v-else>Mining started automatically upon registration.</p>
+  <div class="container">
+    <img :src="coinImage" alt="Coin Icon" class="coin-image" />
+    <p>Your Coin Balance: <span class="coin">{{ coinBalance }}</span></p>
 
-    <div v-if="miningActive">
-      <p>Mining started: {{ miningStartTime }}</p>
-      <p>Time elapsed: {{ timeElapsed }} / {{ miningDuration }} hours</p>
-      <p>Estimated earnings: {{ currentEarnings }} AIC</p>
-
-      <button v-if="canClaimPartial" @click="claimPartialReward">Claim Partial Reward</button>
-      <button v-if="canClaimFull" @click="claimFullReward">Collect Full Reward</button>
+    <!-- Clickable Community Div -->
+    <div class="clickable" @click="redirectToCommunity">
+      <h3>Community</h3>
+      <p>Join our community to get the latest updates and news.</p>
     </div>
 
-    <h2>Upgrades</h2>
-    <div class="upgrades">
-      <button @click="upgradeTimeReduction">Reduce Mining Time ({{ upgradeCost }} AIC)</button>
-      <button @click="activateBoost">Boost Mining ({{ boostCost }} AIC)</button>
-      <button @click="increaseCoinLimit">Increase Coin Limit ({{ limitCost }} AIC)</button>
+    <div>
+      <h3>History</h3>
     </div>
   </div>
 </template>
 
 <script>
-import { db, auth } from "@/firebase";
-import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
+import { ref, onMounted } from "vue";
+import { db } from "../firebase";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import coinImage from "@/assets/coin.png";
 
 export default {
-  data() {
-    return {
-      miningStartTime: null,
-      miningDuration: 11,
-      claimedPartial: false,
-      miningUpgrades: { timeReduction: 0, boostActive: false, coinLimit: 1000, level: 1 },
-      upgradeCosts: [100, 200, 300, 500, 800, 1200, 1800],
+  setup() {
+    const coinBalance = ref(0);
+    const auth = getAuth();
+    let unsubscribe = null;
+
+    const fetchCoinBalance = async (userId) => {
+      if (!userId) return;
+      try {
+        const userDocRef = doc(db, "users", userId);
+        unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+          if (docSnap.exists()) {
+            coinBalance.value = docSnap.data().coinBalance || 0;
+          } else {
+            console.log("User data not found.");
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching coin balance:", error);
+      }
     };
-  },
-  async created() {
-    await this.fetchMiningData();
-    if (!this.miningActive) {
-      this.startMining();
-    }
-  },
-  computed: {
-    miningActive() {
-      return this.miningStartTime !== null;
-    },
-    timeElapsed() {
-      if (!this.miningActive) return 0;
-      return ((Date.now() - this.miningStartTime) / (1000 * 60 * 60)).toFixed(2);
-    },
-    canClaimPartial() {
-      return this.timeElapsed >= this.miningDuration / 2 && !this.claimedPartial;
-    },
-    canClaimFull() {
-      return this.timeElapsed >= this.miningDuration;
-    },
-    currentEarnings() {
-      if (!this.miningActive) return 0;
-      const ratePerHour = 70 / this.miningDuration;
-      return Math.floor(ratePerHour * this.timeElapsed);
-    },
-    upgradeCost() {
-      return this.miningUpgrades.level * 100;
-    },
-    boostCost() {
-      return this.miningUpgrades.level * 150;
-    },
-    limitCost() {
-      return this.miningUpgrades.level * 200;
-    }
-  },
-  methods: {
-    async fetchMiningData() {
-      const user = auth.currentUser;
-      if (user) {
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          this.miningStartTime = data.miningStart || null;
-          this.claimedPartial = data.claimedPartial || false;
-          this.miningUpgrades = data.miningUpgrades || this.miningUpgrades;
 
-          if (this.miningUpgrades.level >= 75) {
-            this.miningDuration = 3;
-          } else {
-            this.miningDuration -= this.miningUpgrades.timeReduction;
-          }
+    const redirectToCommunity = () => {
+      window.open("https://nocorps.netlify.app/", "_blank"); // ✅ Correct external link
+    };
+
+    onMounted(() => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          fetchCoinBalance(user.uid);
         }
-      }
-    },
-    async startMining() {
-      const user = auth.currentUser;
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const startTime = Date.now();
+      });
+    });
 
-        await updateDoc(userRef, {
-          miningStart: startTime,
-          claimedPartial: false,
-        });
-
-        this.miningStartTime = startTime;
-      }
-    },
-    async claimPartialReward() {
-      const user = auth.currentUser;
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const partialReward = Math.floor(70 / 2);
-
-        await updateDoc(userRef, {
-          coinBalance: increment(partialReward),
-          claimedPartial: true,
-        });
-
-        this.claimedPartial = true;
-        alert(`You have claimed ${partialReward} AIC.`);
-      }
-    },
-    async claimFullReward() {
-      const user = auth.currentUser;
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-
-        await updateDoc(userRef, {
-          coinBalance: increment(70),
-          miningStart: null,
-        });
-
-        this.miningStartTime = null;
-        alert("You have collected 70 AIC.");
-      }
-    },
-    async upgradeTimeReduction() {
-      await this.upgrade("timeReduction", this.upgradeCost);
-    },
-    async activateBoost() {
-      await this.upgrade("boostActive", this.boostCost);
-    },
-    async increaseCoinLimit() {
-      await this.upgrade("coinLimit", this.limitCost);
-    },
-    async upgrade(type, cost) {
-      const user = auth.currentUser;
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          if (userData.coinBalance >= cost) {
-            await updateDoc(userRef, {
-              [`miningUpgrades.${type}`]: increment(1),
-              coinBalance: increment(-cost),
-              "miningUpgrades.level": increment(1),
-            });
-            this.miningUpgrades[type]++;
-            this.miningUpgrades.level++;
-            alert(`Upgrade successful! Your new level is ${this.miningUpgrades.level}.`);
-          } else {
-            alert("Not enough AIC coins for this upgrade!");
-          }
-        }
-      }
-    }
-  }
+    return { coinBalance, coinImage, redirectToCommunity };
+  },
 };
 </script>
 
 <style scoped>
-.mining-container {
-  max-width: 600px;
-  margin: auto;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #1d1d1d, #363636);
+  color: #fff;
+  font-family: "Roboto", sans-serif;
 }
-button {
-  margin: 5px;
-  padding: 8px 12px;
-  background-color: #28a745;
-  color: white;
-  border: none;
+
+.coin-image {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 10px #ffd700);
+}
+
+p {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.coin {
+  color: #ffd700;
+  font-size: 22px;
+  font-weight: bold;
+  text-shadow: 0 0 10px #ffd700;
+}
+
+/* Clickable div styling */
+.clickable {
   cursor: pointer;
-  border-radius: 4px;
+  padding: 15px;
+  background: #444;
+  border-radius: 10px;
+  transition: background 0.3s, transform 0.2s;
 }
-button:hover {
-  background-color: #218838;
+
+.clickable:hover {
+  background: #555;
+  transform: scale(1.05);
 }
 </style>
