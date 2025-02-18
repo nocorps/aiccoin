@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ranking-container">
     <!-- Tabs for Global and Country-wise Rankings -->
     <div class="tabs">
       <button @click="activeTab = 'global'" :class="{ active: activeTab === 'global' }">Global Ranking</button>
@@ -7,42 +7,44 @@
     </div>
 
     <!-- Global Ranking Tab -->
-    <div v-if="activeTab === 'global'">
-      <h2>Global Rankings</h2>
-      <div>
+    <div v-if="activeTab === 'global'" class="ranking-section">
+      <h2>🌎 Global Rankings</h2>
+      <div class="filters">
         <button @click="fetchGlobalRanking('coinBalance')">By Coin Balance</button>
         <button @click="fetchGlobalRanking('tasksCompleted')">By Tasks Completed</button>
       </div>
       <ul>
         <li v-for="(user, index) in globalRankings" :key="user.uid">
-          <strong>{{ index + 1 }}. {{ user.name }}</strong> - Coins: {{ user.coinBalance }} | Tasks: {{ user.tasksCompleted }}
+          <span class="rank">{{ index + 1 }}</span>
+          <strong>{{ user.name }}</strong> - 💰 {{ user.coinBalance }} | 📋 {{ user.tasksCompleted }}
         </li>
       </ul>
-      <p v-if="currentUserGlobalRank">
-        Your rank: {{ currentUserGlobalRank.rank }} | Coins: {{ currentUserGlobalRank.coinBalance }} | Tasks: {{ currentUserGlobalRank.tasksCompleted }}
+      <p v-if="currentUserGlobalRank" class="user-rank">
+        Your rank: <span>#{{ currentUserGlobalRank.rank }}</span> | 💰 {{ currentUserGlobalRank.coinBalance }} | 📋 {{ currentUserGlobalRank.tasksCompleted }}
       </p>
     </div>
 
     <!-- Country Ranking Tab -->
-    <div v-if="activeTab === 'country'">
-      <h3>Country Rankings ({{ selectedCountry }})</h3>
-      <div>
+    <div v-if="activeTab === 'country'" class="ranking-section">
+      <h3>🏳️ Country Rankings ({{ selectedCountry }})</h3>
+      <div class="filters">
         <button @click="fetchCountryRanking('coinBalance')">By Coin Balance</button>
         <button @click="fetchCountryRanking('tasksCompleted')">By Tasks Completed</button>
       </div>
       <ul>
         <li v-for="(user, index) in countryRankings" :key="user.uid">
-          <strong>{{ index + 1 }}. {{ user.name }}</strong> - Coins: {{ user.coinBalance }} | Tasks: {{ user.tasksCompleted }}
+          <span class="rank">{{ index + 1 }}</span>
+          <strong>{{ user.name }}</strong> - 💰 {{ user.coinBalance }} | 📋 {{ user.tasksCompleted }}
         </li>
       </ul>
-      <p v-if="currentUserCountryRank">
-        Your rank: {{ currentUserCountryRank.rank }} | Coins: {{ currentUserCountryRank.coinBalance }} | Tasks: {{ currentUserCountryRank.tasksCompleted }}
+      <p v-if="currentUserCountryRank" class="user-rank">
+        Your rank: <span>#{{ currentUserCountryRank.rank }}</span> | 💰 {{ currentUserCountryRank.coinBalance }} | 📋 {{ currentUserCountryRank.tasksCompleted }}
       </p>
     </div>
 
     <!-- Country Select dropdown (only for country tab) -->
-    <div v-if="activeTab === 'country'">
-      <label for="country">Select Country:</label>
+    <div v-if="activeTab === 'country'" class="country-select">
+      <label for="country">🌍 Select Country:</label>
       <select v-model="selectedCountry" @change="fetchCountryRanking('coinBalance')">
         <option v-for="(country, index) in countries" :key="index" :value="country">
           {{ country }}
@@ -51,6 +53,11 @@
     </div>
   </div>
 </template>
+
+
+
+
+
 
 <script>
 import { ref, onMounted } from 'vue';
@@ -131,14 +138,31 @@ export default {
 </script>
 
 <style scoped>
+/* Dark UI Theme */
+.ranking-container {
+  background-color: #121212;
+  color: #e0e0e0;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Tab Styling */
 .tabs {
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  margin-bottom: 15px;
 }
 
 .tabs button {
-  padding: 10px;
+  padding: 10px 20px;
   cursor: pointer;
+  border: none;
+  background: #1f1f1f;
+  color: #e0e0e0;
+  transition: 0.3s;
+  border-radius: 5px;
+  margin: 0 5px;
 }
 
 .tabs button.active {
@@ -146,15 +170,83 @@ export default {
   color: white;
 }
 
+/* Ranking Section */
+.ranking-section {
+  padding: 15px;
+  background: #1e1e1e;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.ranking-section h2, 
+.ranking-section h3 {
+  color: #ffd700;
+  text-align: center;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.filters button {
+  background: #282828;
+  border: none;
+  padding: 8px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  color: #e0e0e0;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.filters button:hover {
+  background: #007bff;
+}
+
+/* Ranking List */
 ul {
   list-style-type: none;
   padding: 0;
 }
 
 li {
-  margin: 5px 0;
-  background-color: #f3f3f3;
+  background-color: #2b2b2b;
   padding: 10px;
+  border-radius: 6px;
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+}
+
+.rank {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffd700;
+  margin-right: 10px;
+}
+
+/* User Rank */
+.user-rank {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+  color: #00ff7f;
+}
+
+/* Country Selection */
+.country-select {
+  margin-top: 15px;
+  text-align: center;
+}
+
+select {
+  background: #282828;
+  color: white;
+  border: none;
+  padding: 8px;
   border-radius: 5px;
 }
 </style>

@@ -1,26 +1,38 @@
 <template>
   <div class="task-container">
-    <h2>Available Tasks</h2>
+    <h2>📌 Available Tasks</h2>
     <ul class="task-list">
       <li v-for="task in availableTasks" :key="task.task_id" class="task-item">
         <h3>{{ task.title }}</h3>
         <p>{{ task.description }}</p>
-        <p>Reward: <strong>{{ task.award }} coins</strong></p>
-        <button v-if="!task.inProgress && !task.completed" @click="startTask(task)">Go</button>
-        <button v-else-if="task.inProgress" @click="verifyTask(task)">Verify</button>
-        <span v-else class="completed-text">✅ Completed</span>
+        <p>🎁 Reward: <strong>{{ task.award }} coins</strong></p>
+        <button v-if="!task.inProgress && !task.completed" @click="startTask(task)">🚀 Start</button>
+        <button v-else-if="task.inProgress" @click="openVerifyModal(task)">✅ Verify</button>
+        <span v-else class="completed-text">✔️ Completed</span>
       </li>
     </ul>
 
-    <h2>Completed Tasks</h2>
+    <h2>🏆 Completed Tasks</h2>
     <ul class="task-list">
-      <li v-for="task in completedTasks" :key="task.task_id" class="task-item">
+      <li v-for="task in completedTasks" :key="task.task_id" class="task-item completed">
         <h3>{{ task.title }}</h3>
         <p>{{ task.description }}</p>
-        <p>Reward: <strong>{{ task.award }} coins</strong></p>
-        <span class="completed-text">✅ Completed</span>
+        <p>🎁 Reward: <strong>{{ task.award }} coins</strong></p>
+        <span class="completed-text">✔️ Completed</span>
       </li>
     </ul>
+
+    <!-- Modal for Secret Code Verification -->
+    <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <h3>Enter the Secret Code</h3>
+        <input v-model="enteredSecret" type="text" placeholder="Secret Code" class="modal-input" />
+        <div class="modal-actions">
+          <button @click="verifyTaskWithModal">Verify</button>
+          <button @click="closeModal">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,6 +45,9 @@ export default {
     return {
       tasks: [],
       userCompletedTasks: [],
+      isModalOpen: false, // Controls the visibility of the modal
+      enteredSecret: '',  // Holds the entered secret code
+      currentTask: null,  // The task that is being verified
     };
   },
   async created() {
@@ -71,13 +86,21 @@ export default {
       task.inProgress = true;
       window.open(task.url_redirect, "_blank");
     },
-    async verifyTask(task) {
-      const userSecret = prompt("Enter the secret code:");
-      if (userSecret === task.secret) {
-        task.completed = true;
-        task.inProgress = false;
-        await this.updateUserTaskData(task);
+    openVerifyModal(task) {
+      this.currentTask = task;  // Set the current task to be verified
+      this.isModalOpen = true;   // Open the modal
+    },
+    closeModal() {
+      this.isModalOpen = false;
+      this.enteredSecret = ''; // Clear the entered secret
+    },
+    async verifyTaskWithModal() {
+      if (this.enteredSecret === this.currentTask.secret) {
+        this.currentTask.completed = true;
+        this.currentTask.inProgress = false;
+        await this.updateUserTaskData(this.currentTask);
         alert("Task verified! Reward added.");
+        this.closeModal();
       } else {
         alert("Incorrect secret. Please try again.");
       }
@@ -100,32 +123,95 @@ export default {
 
 <style scoped>
 .task-container {
-  max-width: 600px;
-  margin: auto;
+  background: #121212;
+  color: #e0e0e0;
+  padding: 20px;
+  border-radius: 10px;
 }
+
 .task-list {
   list-style: none;
   padding: 0;
 }
+
 .task-item {
-  padding: 10px;
+  background: #1e1e1e;
+  padding: 15px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.1);
 }
+
+.task-item.completed {
+  background: #2a2a2a;
+  border-left: 5px solid #4caf50;
+}
+
 button {
-  padding: 5px 10px;
-  background-color: #007bff;
+  padding: 10px;
+  margin-top: 10px;
+  background: #007bff;
   color: white;
   border: none;
-  border-radius: 3px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.completed-text {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+}
+
+.modal-input {
+  width: 80%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
-button:hover {
-  background-color: #0056b3;
-}
-.completed-text {
-  color: green;
-  font-weight: bold;
+
+.modal-actions button:hover {
+  background: #0056b3;
 }
 </style>

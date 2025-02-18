@@ -6,6 +6,10 @@
         <p><strong>Name:</strong> {{ user.name }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
         <p><strong>Country:</strong> {{ user.country }}</p>
+        <p><strong>Coins:</strong> {{ user.coinBalance }} 🪙</p>
+        <p><strong>Referral Code:</strong> {{ user.referralCode }}</p>
+        <!-- <p><strong>Joined:</strong> {{ formattedDate }}</p> -->
+        <!-- <button @click="logout" class="logout-btn">Logout</button> -->
       </div>
       <div v-else>
         <p>Loading your profile...</p>
@@ -55,16 +59,16 @@ export default {
   align-items: center;
   height: 100vh;
   background: linear-gradient(135deg, #1d1d1d, #363636);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .profile-wrapper {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   padding: 30px;
   border-radius: 15px;
   width: 100%;
   max-width: 450px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 h2 {
@@ -84,5 +88,23 @@ h2 {
 
 .profile-details strong {
   color: #42b983;
+}
+
+.logout-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background: #ff4d4d;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #cc0000;
 }
 </style>
