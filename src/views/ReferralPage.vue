@@ -5,7 +5,10 @@
 
     <h3>Invite Friends</h3>
     <p>
-      Share this link: <strong class="referral-link">{{ referralLink }}</strong>
+      Share this link: 
+      <strong class="referral-link">{{ referralLink }}</strong>
+      <button @click="copyReferralLink" class="copy-btn">Copy</button>
+      <button @click="shareReferralLink" class="share-btn">Share</button>
     </p>
 
     <h3>People who joined using your code:</h3>
@@ -15,7 +18,7 @@
           <strong>#{{ index + 1 }}</strong>
           <p><strong>Name:</strong> {{ refUser.name }}</p>
           <p><strong>Country:</strong> {{ refUser.country }}</p>
-          <p><strong>Email:</strong> {{ refUser.email }}</p>
+          <!-- <p><strong>Email:</strong> {{ refUser.email }}</p> -->
           <p class="coins"><strong>Coins:</strong> {{ refUser.coinBalance }} 🪙</p>
         </div>
       </li>
@@ -73,7 +76,35 @@ export default {
       return user.value ? `${window.location.origin}/register?ref=${user.value.referralCode}` : '';
     });
 
-    return { user, referralLink, referredUsers };
+    // Copy referral link to clipboard
+    const copyReferralLink = () => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(referralLink.value).then(() => {
+          alert("Referral link copied to clipboard!");
+        }).catch((error) => {
+          console.error("Error copying link:", error);
+        });
+      }
+    };
+
+    // Share referral link using the Web Share API
+    const shareReferralLink = () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Join me on AIC Coin!',
+          text: 'Check out AIC Coin, and use my referral code!',
+          url: referralLink.value,
+        }).then(() => {
+          console.log("Link shared successfully");
+        }).catch((error) => {
+          console.error("Error sharing link:", error);
+        });
+      } else {
+        alert("Sharing is not supported on your browser.");
+      }
+    };
+
+    return { user, referralLink, referredUsers, copyReferralLink, shareReferralLink };
   }
 };
 </script>
@@ -132,4 +163,20 @@ li {
   color: #ffd700;
   font-weight: bold;
 }
+
+.copy-btn, .share-btn {
+  background-color: #0ff;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.copy-btn:hover, .share-btn:hover {
+  background-color: #ffcc00;
+}
+
 </style>
