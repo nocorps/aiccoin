@@ -15,10 +15,12 @@
             <div :class="['nav-links', { active: isMenuOpen }]">
                 <router-link to="/" @click="closeMenu">Home</router-link>
                 <router-link to="/ranking" @click="closeMenu">Ranking</router-link>
-                <router-link to="/community" @click="closeMenu">Community</router-link>
+                
                 <router-link to="/tasks" @click="closeMenu">Tasks</router-link>
-                <router-link to="/profile" @click="closeMenu">Profile</router-link>
+                
                 <router-link to="/referral" @click="closeMenu">Referral</router-link>
+                <router-link to="/profile" @click="closeMenu">Profile</router-link>
+                <router-link to="/support-page" @click="closeMenu">Support</router-link>
 
                 <!-- Conditional Authentication Buttons -->
                 <button v-if="isAuthenticated" @click="logout" class="logout-btn">Logout</button>

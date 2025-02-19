@@ -3,40 +3,41 @@
     <img :src="coinImage" alt="Coin Icon" class="coin-image" />
     <p>Your Coin Balance: <span class="coin">{{ coinBalance }}</span></p>
 
-    <!-- Clickable Community Div -->
-    <div class="clickable" @click="redirectToCommunity">
-      <h3>Community</h3>
-      <p>Join our community to get the latest updates and news.</p>
-    </div>
-
-    <div>
+    <!-- <div>
       <h3>History</h3>
-    </div>
+      <ul v-if="transactions.length">
+        <li v-for="transaction in transactions" :key="transaction.id">
+          {{ transaction.reason }} - <span class="coin">{{ transaction.amount }}</span> coins ({{ formatTimestamp(transaction.timestamp) }})
+        </li>
+      </ul>
+      <p v-else>No transactions yet.</p>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
 import { db } from "../firebase";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import coinImage from "@/assets/coin.png";
 
 export default {
   setup() {
     const coinBalance = ref(0);
+    const transactions = ref([]);
     const auth = getAuth();
-    let unsubscribe = null;
+    let unsubscribeBalance = null;
+    let unsubscribeTransactions = null;
 
     const fetchCoinBalance = async (userId) => {
       if (!userId) return;
       try {
-        const userDocRef = doc(db, "users", userId);
-        unsubscribe = onSnapshot(userDocRef, (docSnap) => {
-          if (docSnap.exists()) {
-            coinBalance.value = docSnap.data().coinBalance || 0;
-          } else {
-            console.log("User data not found.");
+        const userDocRef = collection(db, "users");
+        unsubscribeBalance = onSnapshot(userDocRef, (querySnapshot) => {
+          const userDoc = querySnapshot.docs.find(doc => doc.id === userId);
+          if (userDoc && userDoc.exists()) {
+            coinBalance.value = userDoc.data().coinBalance || 0;
           }
         });
       } catch (error) {
@@ -44,19 +45,39 @@ export default {
       }
     };
 
-    const redirectToCommunity = () => {
-      window.open("https://nocorps.netlify.app/", "_blank"); // ✅ Correct external link
+    const fetchTransactionHistory = async (userId) => {
+      if (!userId) return;
+      try {
+        const transactionsRef = collection(db, "coinHistory");
+        const q = query(transactionsRef, where("userId", "==", userId), orderBy("timestamp", "desc"));
+
+        unsubscribeTransactions = onSnapshot(q, (querySnapshot) => {
+          transactions.value = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+        });
+      } catch (error) {
+        console.error("Error fetching transaction history:", error);
+      }
+    };
+
+    const formatTimestamp = (timestamp) => {
+      if (!timestamp || !timestamp.seconds) return "Unknown";
+      const date = new Date(timestamp.seconds * 1000);
+      return date.toLocaleString();
     };
 
     onMounted(() => {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           fetchCoinBalance(user.uid);
+          fetchTransactionHistory(user.uid);
         }
       });
     });
 
-    return { coinBalance, coinImage, redirectToCommunity };
+    return { coinBalance, transactions, formatTimestamp, coinImage };
   },
 };
 </script>
@@ -92,17 +113,19 @@ p {
   text-shadow: 0 0 10px #ffd700;
 }
 
-/* Clickable div styling */
-.clickable {
-  cursor: pointer;
-  padding: 15px;
-  background: #444;
-  border-radius: 10px;
-  transition: background 0.3s, transform 0.2s;
+h3 {
+  margin-top: 20px;
 }
 
-.clickable:hover {
-  background: #555;
-  transform: scale(1.05);
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background: #444;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
 }
 </style>

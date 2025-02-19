@@ -1,5 +1,6 @@
 import { db } from '../firebase';
-import { doc, setDoc, updateDoc, arrayUnion, increment, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayUnion, increment, getDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { addCoinHistory } from '../models/historyModel';
 // Create a new user in Firestore
 const createUserDocument = async (userId, userDetails) => {
   try {
@@ -11,7 +12,7 @@ const createUserDocument = async (userId, userDetails) => {
       referralUsed: userDetails.referralUsed || '',  // Referral code used (if any)
       //referredUsers: [], // Store referred users
       coinBalance: userDetails.coinBalance ||  0,  
-      tasksCompleted: 0,  
+      tasksCompleted: userDetails.tasksCompleted || 0,  
       //adsWatched: 0,
       country: userDetails.country || '', // Store country of the user
     });
@@ -19,30 +20,40 @@ const createUserDocument = async (userId, userDetails) => {
     console.error("Error creating user document: ", error);
   }
 };
-
-const updateReferralSystem = async (referralCode, newUserId, newUserEmail) => {
+const updateReferralSystem = async (referralCode, newUserId, newUserEmail, newUserCoinBalance) => {
   try {
     // Query to find the referrer based on the referralCode
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('referralCode', '==', referralCode));
     const querySnapshot = await getDocs(q);
-
     if (!querySnapshot.empty) {
-      // Assuming referralCode is unique, take the first matching document
+      // Get referrer's data
       const referrerDoc = querySnapshot.docs[0];
-      const referrerDocRef = doc(db, 'users', referrerDoc.id);
-
-      // Add the new user to the referrer's referredUsers list
+      const referrerId = referrerDoc.id;
+      const referrerData = referrerDoc.data();
+      const referrerDocRef = doc(db, 'users', referrerId);
+      // Get total referred users count
+      const referredUsersCount = referrerData.referredUsers ? referrerData.referredUsers.length : 0;
+      // Determine bonus percentage based on referral count
+      let bonusPercentage = 10;
+      if (referredUsersCount > 10) {
+        bonusPercentage = 20;
+      }
+      if (referredUsersCount >= 142) {
+        bonusPercentage = 45;
+      }
+      // Calculate the bonus amount
+      const bonusAmount = Math.floor((bonusPercentage / 100) * newUserCoinBalance);
+      // Update referrer’s document
       await updateDoc(referrerDocRef, {
         referredUsers: arrayUnion({
           uid: newUserId,
           email: newUserEmail,
-          coinBalance: 0, // New user starts with 0 coins
+          coinBalance: newUserCoinBalance,
         }),
-        coinBalance: increment(25) // Reward referrer with 25 coins
+        coinBalance: increment(bonusAmount) // Add referral bonus
       });
-
-      console.log('Referral system updated successfully.');
+      console.log(`Referral bonus of ${bonusAmount} coins given to ${referrerData.email}`);
     } else {
       console.error('No user found with the provided referral code.');
     }
@@ -50,20 +61,19 @@ const updateReferralSystem = async (referralCode, newUserId, newUserEmail) => {
     console.error('Error updating referral system:', error);
   }
 };
-
-
 // Update coin balance
-const updateCoinBalance = async (userId, amount) => {
+const updateCoinBalance = async (userId, amount, reason) => {
   const userDocRef = doc(db, 'users', userId);
   try {
     await updateDoc(userDocRef, {
       coinBalance: increment(amount)
     });
+    await addCoinHistory(userId, amount, reason);
+    console.log(`✅ Coin balance updated by ${amount} coins for: ${reason}`);
   } catch (error) {
-    console.error("Error updating coin balance: ", error);
+    console.error("❌ Error updating coin balance and storing history: ", error);
   }
 };
-
 // Update ads watched
 const updateAdsWatched = async (userId) => {
   const userDocRef = doc(db, 'users', userId);
@@ -76,5 +86,12 @@ const updateAdsWatched = async (userId) => {
     console.error("Error updating ads watched: ", error);
   }
 };
-
+const updateTasksCompleted = async (userId) => {
+  const userDocRef = doc(db, 'users', userId);
+  try {
+    await updateDoc(userDocRef, { tasksCompleted: increment(1) });  // Increment tasks count
+  } catch (error) {
+    console.error("❌ Error updating tasks completed: ", error);
+  }
+};
 export { createUserDocument, updateReferralSystem, updateCoinBalance, updateAdsWatched };

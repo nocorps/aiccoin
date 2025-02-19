@@ -15,7 +15,7 @@ const routes = [
   { path: '/login', name: 'Login', component: LoginPage },
   { path: '/register', name: 'Register', component: RegisterPage },
   { path: '/ranking', name: 'Ranking', component: RankingPage, meta: { requiresAuth: true }},
-  { path: '/community', name: 'Community', component: CommunityPage, meta: { requiresAuth: true }},
+  { path: '/support-page', name: 'Support', component: CommunityPage, meta: { requiresAuth: true }},
   { path: '/tasks', name: 'Tasks', component: TasksPage, meta: { requiresAuth: true }},
   { path: '/profile', name: 'Profile', component: ProfilePage, meta: { requiresAuth: true }},
   { path: '/referral', name: 'Referral', component: ReferralPage, meta: { requiresAuth: true }},

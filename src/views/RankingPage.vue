@@ -1,67 +1,25 @@
 <template>
   <div class="ranking-container">
-    <!-- Tabs for Global and Country-wise Rankings -->
-    <div class="tabs">
-      <button @click="activeTab = 'global'" :class="{ active: activeTab === 'global' }">Global Ranking</button>
-      <button @click="activeTab = 'country'" :class="{ active: activeTab === 'country' }">Country Ranking</button>
+    <h2>🌎 Global Rankings</h2>
+    <div class="filters">
+      <button @click="fetchGlobalRanking('coinBalance')">By Coin Balance</button>
+      <button @click="fetchGlobalRanking('taskCount')">By Tasks Completed</button>
     </div>
-
-    <!-- Global Ranking Tab -->
-    <div v-if="activeTab === 'global'" class="ranking-section">
-      <h2>🌎 Global Rankings</h2>
-      <div class="filters">
-        <button @click="fetchGlobalRanking('coinBalance')">By Coin Balance</button>
-        <button @click="fetchGlobalRanking('tasksCompleted')">By Tasks Completed</button>
-      </div>
-      <ul>
-        <li v-for="(user, index) in globalRankings" :key="user.uid">
-          <span class="rank">{{ index + 1 }}</span>
-          <strong>{{ user.name }}</strong> - 💰 {{ user.coinBalance }} | 📋 {{ user.tasksCompleted }}
-        </li>
-      </ul>
-      <p v-if="currentUserGlobalRank" class="user-rank">
-        Your rank: <span>#{{ currentUserGlobalRank.rank }}</span> | 💰 {{ currentUserGlobalRank.coinBalance }} | 📋 {{ currentUserGlobalRank.tasksCompleted }}
-      </p>
-    </div>
-
-    <!-- Country Ranking Tab -->
-    <div v-if="activeTab === 'country'" class="ranking-section">
-      <h3>🏳️ Country Rankings ({{ selectedCountry }})</h3>
-      <div class="filters">
-        <button @click="fetchCountryRanking('coinBalance')">By Coin Balance</button>
-        <button @click="fetchCountryRanking('tasksCompleted')">By Tasks Completed</button>
-      </div>
-      <ul>
-        <li v-for="(user, index) in countryRankings" :key="user.uid">
-          <span class="rank">{{ index + 1 }}</span>
-          <strong>{{ user.name }}</strong> - 💰 {{ user.coinBalance }} | 📋 {{ user.tasksCompleted }}
-        </li>
-      </ul>
-      <p v-if="currentUserCountryRank" class="user-rank">
-        Your rank: <span>#{{ currentUserCountryRank.rank }}</span> | 💰 {{ currentUserCountryRank.coinBalance }} | 📋 {{ currentUserCountryRank.tasksCompleted }}
-      </p>
-    </div>
-
-    <!-- Country Select dropdown (only for country tab) -->
-    <div v-if="activeTab === 'country'" class="country-select">
-      <label for="country">🌍 Select Country:</label>
-      <select v-model="selectedCountry" @change="fetchCountryRanking('coinBalance')">
-        <option v-for="(country, index) in countries" :key="index" :value="country">
-          {{ country }}
-        </option>
-      </select>
-    </div>
+    <ul>
+      <li v-for="(user, index) in globalRankings" :key="user.uid">
+        <span class="rank">{{ index + 1 }}</span>
+        <strong>{{ user.name }}</strong> - 💰 {{ user.coinBalance }} | 📋 {{ user.taskCount }}
+      </li>
+    </ul>
+    <p v-if="currentUserGlobalRank" class="user-rank">
+      Your rank: <span>#{{ currentUserGlobalRank.rank }}</span> | 💰 {{ currentUserGlobalRank.coinBalance }} | 📋 {{ currentUserGlobalRank.taskCount }}
+    </p>
   </div>
 </template>
 
-
-
-
-
-
 <script>
 import { ref, onMounted } from 'vue';
-import { getGlobalRanking, getCountryRanking } from '../models/rankingModel';
+import { getGlobalRanking } from '../models/rankingModel';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -69,69 +27,30 @@ import { doc, getDoc } from 'firebase/firestore';
 export default {
   setup() {
     const globalRankings = ref([]);
-    const countryRankings = ref([]);
-    const selectedCountry = ref('');
-    const countries = ref(['India', 'USA', 'Canada', 'UK']); // Example countries
-    const activeTab = ref('global'); // Track active tab
     const currentUserGlobalRank = ref(null);
-    const currentUserCountryRank = ref(null);
-    const userCountry = ref('');
-
     const auth = getAuth();
     const userId = auth.currentUser?.uid;
 
-    // Fetch global rankings for Coin Balance or Tasks Completed
     const fetchGlobalRanking = async (sortBy) => {
       globalRankings.value = await getGlobalRanking(sortBy);
       updateUserRank(globalRankings.value, sortBy);
     };
 
-    // Fetch country-specific rankings for Coin Balance or Tasks Completed
-    const fetchCountryRanking = async (sortBy) => {
-      countryRankings.value = await getCountryRanking(selectedCountry.value, sortBy);
-      updateUserRank(countryRankings.value, sortBy, true);
-    };
-
-    // Detect the user's country automatically
-    const fetchUserCountry = async () => {
-      if (userId) {
-        const userDoc = await getDoc(doc(db, 'users', userId));
-        if (userDoc.exists()) {
-          userCountry.value = userDoc.data().country;
-          selectedCountry.value = userCountry.value; // Set default country
-        }
-      }
-    };
-
-    // Update the current user's rank based on their `coinBalance` or `tasksCompleted`
-    const updateUserRank = (rankings, sortBy, isCountry = false) => {
+    const updateUserRank = (rankings, sortBy) => {
       const userRank = rankings.findIndex(user => user.uid === userId);
       if (userRank !== -1) {
-        const userData = rankings[userRank];
-        if (isCountry) {
-          currentUserCountryRank.value = { rank: userRank + 1, ...userData };
-        } else {
-          currentUserGlobalRank.value = { rank: userRank + 1, ...userData };
-        }
+        currentUserGlobalRank.value = { rank: userRank + 1, ...rankings[userRank] };
       }
     };
 
     onMounted(() => {
-      fetchUserCountry();
       fetchGlobalRanking('coinBalance');
-      fetchCountryRanking('coinBalance');
     });
 
     return {
       globalRankings,
-      countryRankings,
-      selectedCountry,
-      countries,
-      activeTab,
       fetchGlobalRanking,
-      fetchCountryRanking,
-      currentUserGlobalRank,
-      currentUserCountryRank
+      currentUserGlobalRank
     };
   }
 };

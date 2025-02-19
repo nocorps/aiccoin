@@ -257,44 +257,45 @@ export default {
     });
 
     const register = async () => {
-      if (password.value !== confirmPassword.value) {
-        alert('Passwords do not match!');
-        return;
-      }
+  if (password.value !== confirmPassword.value) {
+    alert('Passwords do not match!');
+    return;
+  }
 
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
-        const userId = userCredential.user.uid;
-        const newReferralCode = generateReferralCode();
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+    const userId = userCredential.user.uid;
+    const newReferralCode = generateReferralCode();
 
-        console.log("User Registered:", userId, email.value);
-        console.log("Referral Code Used:", referralCode.value);
+    console.log("User Registered:", userId, email.value);
+    console.log("Referral Code Used:", referralCode.value);
 
+    // Generate a random initial coin balance (e.g., 80,000)
+    const randomCoinBalance = Math.floor(Math.random() * (100000 - 1000 + 1)) + 1000;;
 
-        const randomCoinBalance = Math.floor(Math.random() * (100000 - 1000 + 1)) + 1000;
-        // Store user data in Firebase
-        await createUserDocument(userId, {
-          name: name.value,
-          email: email.value,
-          country: country.value,
-          referralCode: newReferralCode,
-          referralUsed: referralCode.value || '',
-          // referredUsers: [],
-          coinBalance: randomCoinBalance
-        });
+    // Store user data in Firebase
+    await createUserDocument(userId, {
+      name: name.value,
+      email: email.value,
+      country: country.value,
+      referralCode: newReferralCode,
+      referralUsed: referralCode.value || '',
+      coinBalance: randomCoinBalance
+    });
 
-        // Handle Referral System
-        if (referralCode.value) {
-          console.log("Updating Referral System for", referralCode.value);
-          await updateReferralSystem(referralCode.value, userId, email.value);
-        }
+    // Handle Referral System
+    if (referralCode.value) {
+      console.log("Updating Referral System for", referralCode.value);
+      await updateReferralSystem(referralCode.value, userId, email.value, randomCoinBalance);
+    }
 
-        // Redirect after successful registration
-        router.push('/');
-      } catch (error) {
-        alert(error.message);
-      }
-    };
+    // Redirect after successful registration
+    router.push('/');
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
 
     return { name, email, password, confirmPassword, country, referralCode, register };
   }
