@@ -5,15 +5,17 @@
       <button @click="fetchGlobalRanking('coinBalance')">By Coin Balance</button>
       <button @click="fetchGlobalRanking('taskCount')">By Tasks Completed</button>
     </div>
+    <p v-if="currentUserGlobalRank" class="user-rank">
+      Your rank: <span>#{{ currentUserGlobalRank.rank }}</span> | 💰 {{ currentUserGlobalRank.coinBalance }} | 📋 {{ currentUserGlobalRank.taskCount }}
+    </p>
+    <br/>
     <ul>
       <li v-for="(user, index) in globalRankings" :key="user.uid">
         <span class="rank">{{ index + 1 }}</span>
         <strong>{{ user.name }}</strong> - 💰 {{ user.coinBalance }} | 📋 {{ user.taskCount }}
       </li>
     </ul>
-    <p v-if="currentUserGlobalRank" class="user-rank">
-      Your rank: <span>#{{ currentUserGlobalRank.rank }}</span> | 💰 {{ currentUserGlobalRank.coinBalance }} | 📋 {{ currentUserGlobalRank.taskCount }}
-    </p>
+    <br/><br/>
   </div>
 </template>
 
@@ -57,115 +59,164 @@ export default {
 </script>
 
 <style scoped>
-/* Dark UI Theme */
 .ranking-container {
-  background-color: #121212;
-  color: #e0e0e0;
-  padding: 20px;
-  border-radius: 10px;
-  font-family: 'Arial', sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #1d1d1d, #2d2d2d);
+  padding-bottom: 100px;
 }
 
-/* Tab Styling */
-.tabs {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 15px;
-}
-
-.tabs button {
-  padding: 10px 20px;
-  cursor: pointer;
-  border: none;
-  background: #1f1f1f;
-  color: #e0e0e0;
-  transition: 0.3s;
-  border-radius: 5px;
-  margin: 0 5px;
-}
-
-.tabs button.active {
-  background-color: #007bff;
-  color: white;
-}
-
-/* Ranking Section */
-.ranking-section {
-  padding: 15px;
-  background: #1e1e1e;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-
-.ranking-section h2, 
-.ranking-section h3 {
-  color: #ffd700;
-  text-align: center;
-}
-
-/* Filters */
 .filters {
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
+  gap: 1rem;
 }
 
 .filters button {
-  background: #282828;
-  border: none;
-  padding: 8px 15px;
-  margin: 0 5px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  padding: 0.75rem 1.5rem;
+  color: rgba(0, 255, 255, 0.7);
+  border-radius: 15px;
   cursor: pointer;
-  color: #e0e0e0;
-  border-radius: 5px;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .filters button:hover {
-  background: #007bff;
+  background: rgba(0, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
 }
 
-/* Ranking List */
+h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
 ul {
-  list-style-type: none;
-  padding: 0;
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  list-style: none;
 }
 
+/* Update text colors and styles */
 li {
-  background-color: #2b2b2b;
-  padding: 10px;
-  border-radius: 6px;
-  margin: 6px 0;
   display: flex;
   align-items: center;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.9); /* Added text color */
+  gap: 1rem; /* Added gap between elements */
+}
+
+li strong {
+  color: rgba(0, 255, 255, 0.9); /* Cyan color for names */
+  font-weight: 500;
+}
+
+li span {
+  color: rgba(255, 255, 255, 0.8); /* Light color for other text */
 }
 
 .rank {
-  font-size: 18px;
+  background: linear-gradient(45deg, #0ff, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.2rem;
   font-weight: bold;
-  color: #ffd700;
-  margin-right: 10px;
+  min-width: 2.5rem;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
-/* User Rank */
 .user-rank {
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
-  margin-top: 10px;
-  font-size: 16px;
-  color: #00ff7f;
+  color: rgba(255, 255, 255, 0.9); /* Updated text color */
 }
 
-/* Country Selection */
-.country-select {
-  margin-top: 15px;
-  text-align: center;
+.user-rank span {
+  color: rgba(0, 255, 255, 0.9); /* Cyan color for rank number */
+  font-weight: bold;
 }
 
-select {
-  background: #282828;
-  color: white;
-  border: none;
-  padding: 8px;
-  border-radius: 5px;
+@media (max-width: 768px) {
+  .ranking-container {
+    padding: 1rem;
+  }
+
+  .filters {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .filters button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  li {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: space-between; /* Better spacing on mobile */
+  }
+
+  li strong {
+    min-width: 120px; /* Ensure names have enough space */
+  }
+
+  .rank {
+    font-size: 1rem;
+    min-width: 2rem;
+  }
+
+  .user-rank {
+    padding: 1rem;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
 }
 </style>

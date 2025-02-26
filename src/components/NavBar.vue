@@ -1,32 +1,29 @@
 <template>
-    <nav>
-        <div class="nav-container">
-            <!-- Logo -->
-            <router-link to="/" class="logo">AIC Coin</router-link>
-
-            <!-- Hamburger Icon -->
-            <div class="hamburger" @click="toggleMenu">
-                <span :class="{ open: isMenuOpen }"></span>
-                <span :class="{ open: isMenuOpen }"></span>
-                <span :class="{ open: isMenuOpen }"></span>
-            </div>
-
-            <!-- Navigation Links -->
-            <div :class="['nav-links', { active: isMenuOpen }]">
-                <router-link to="/" @click="closeMenu">Home</router-link>
-                <router-link to="/ranking" @click="closeMenu">Ranking</router-link>
-                
-                <router-link to="/tasks" @click="closeMenu">Tasks</router-link>
-                
-                <router-link to="/referral" @click="closeMenu">Referral</router-link>
-                <router-link to="/profile" @click="closeMenu">Profile</router-link>
-                <router-link to="/support-page" @click="closeMenu">Support</router-link>
-
-                <!-- Conditional Authentication Buttons -->
-                <button v-if="isAuthenticated" @click="logout" class="logout-btn">Logout</button>
-                <router-link v-else to="/login" @click="closeMenu">Login</router-link>
-            </div>
-        </div>
+    <nav class="bottom-nav">
+        <router-link to="/" class="nav-item">
+            <i class="mdi mdi-home"></i>
+            <span>Home</span>
+        </router-link>
+        
+        <router-link to="/ranking" class="nav-item">
+            <i class="mdi mdi-trophy"></i>
+            <span>Ranking</span>
+        </router-link>
+        
+        <router-link to="/tasks" class="nav-item">
+            <i class="mdi mdi-clipboard-check"></i>
+            <span>Tasks</span>
+        </router-link>
+        
+        <router-link to="/referral" class="nav-item">
+            <i class="mdi mdi-account-multiple"></i>
+            <span>Referral</span>
+        </router-link>
+        
+        <router-link to="/profile" class="nav-item">
+            <i class="mdi mdi-account-circle"></i>
+            <span>Profile</span>
+        </router-link>
     </nav>
 </template>
 
@@ -35,6 +32,7 @@ import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import '@mdi/font/css/materialdesignicons.css';
 
 export default {
     setup() {
@@ -69,116 +67,114 @@ export default {
 
 <style scoped>
 /* Navbar Styles */
-nav {
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    width: 100%;
-    top: 0;
-    left: 0;
+
+
+.bottom-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center; /* Add this to center items vertically */
+    background: linear-gradient(
+        145deg,
+        rgba(16, 20, 24, 0.85),  /* Reduced opacity from 0.95 to 0.85 */
+        rgba(0, 0, 0, 0.256)       /* Reduced opacity from 0.9 to 0.8 */
+    );
+    backdrop-filter: blur(15px);  /* Increased blur for better readability */
+    padding: 14px 28px;
+    border-radius: 25px;
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.2),  /* Reduced shadow opacity */
+        0 0 20px rgba(0, 255, 255, 0.1),  /* Reduced glow opacity */
+        inset 0 0 20px rgba(255, 255, 255, 0.03);  /* Reduced inner glow */
+    border: 1px solid rgba(255, 255, 255, 0.08);   /* Reduced border opacity */
     z-index: 1000;
+    width: 420px;
+    margin: 0 auto; /* Add this to ensure horizontal centering */
 }
 
-.nav-container {
+/* Add padding to prevent content from being hidden behind bottom nav */
+:deep(body) {
+    padding-bottom: 120px; /* Adjust based on your bottom nav height */
+    min-height: 100vh;
+}
+
+.nav-item {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.logo {
-    color: #0ff;
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-decoration: none;
-    text-shadow: 0 0 10px #0ff;
-}
-
-/* Navigation Links */
-.nav-links {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.nav-links a,
-.logout-btn {
-    color: #0ff;
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: all 0.3s ease-in-out;
-}
-
-.nav-links a:hover,
-.logout-btn:hover {
-    background: rgba(0, 255, 255, 0.2);
-    text-shadow: 0 0 10px #0ff;
-}
-
-.logout-btn {
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 5px;
-}
-
-/* Hamburger Icon */
-.hamburger {
-    display: none;
     flex-direction: column;
-    cursor: pointer;
-    gap: 5px;
+    align-items: center;
+    text-decoration: none;
+    color: rgba(0, 255, 255, 0.8);  /* Increased text opacity for better visibility */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 8px 16px;
+    position: relative;
 }
 
-.hamburger span {
-    width: 25px;
-    height: 3px;
+.nav-item:hover,
+.nav-item.router-link-active {
+    color: rgba(0, 255, 255, 1);  /* Full opacity on hover/active */
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);  /* Adjusted glow */
+    transform: translateY(-3px);
+}
+
+.nav-item i {
+    font-size: 26px;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.3));
+}
+
+.nav-item span {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
     background: #0ff;
-    border-radius: 2px;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
-/* Hamburger Animation */
-.hamburger span.open:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+.nav-item:hover::after,
+.nav-item.router-link-active::after {
+    width: 70%;
 }
 
-.hamburger span.open:nth-child(2) {
-    opacity: 0;
-}
-
-.hamburger span.open:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
-}
-
-/* Responsive Styles */
 @media (max-width: 768px) {
-    .hamburger {
-        display: flex;
+    .bottom-nav {
+        width: 90%;
+        max-width: 420px;
+        bottom: 15px;
+        padding: 12px 15px;
+        margin: 0 auto;
+        background: linear-gradient(
+            145deg,
+            rgba(16, 20, 24, 0),  /* Slightly higher opacity for mobile */
+            rgba(0, 0, 0, 0)
+        );
+        backdrop-filter: blur(12px);
     }
 
-    .nav-links {
-        position: absolute;
-        top: 60px;
-        right: 0;
-        background: rgba(0, 0, 0, 0.9);
-        flex-direction: column;
-        width: 200px;
-        padding: 20px;
-        gap: 15px;
-        transform: translateX(100%);
-        transition: transform 0.3s ease-in-out;
-        border-radius: 10px 0 0 10px;
+    .nav-item {
+        padding: 6px 8px;
     }
 
-    .nav-links.active {
-        transform: translateX(0);
+    .nav-item i {
+        font-size: 22px;
+    }
+
+    .nav-item span {
+        font-size: 10px;
     }
 }
 </style>

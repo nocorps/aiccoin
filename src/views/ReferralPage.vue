@@ -111,72 +111,182 @@ export default {
 
 <style scoped>
 .referral {
-  /*max-width: 600px;*/
-  margin: auto;
-  padding: 20px;
-  background: #1e1e1e;
-  color: #e0e0e0;
-  text-align: center;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #1d1d1d, #2d2d2d);
+  padding-bottom: 100px;
 }
 
 h2, h3 {
-  color: #ffcc00;
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  background: linear-gradient(45deg, #0ff, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+h3 {
+  font-size: 1.2rem;
 }
 
 .referral-code {
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 1.5rem;
+  margin: 1.5rem auto;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(0, 255, 255, 0.9);
   font-size: 1.5rem;
-  font-weight: bold;
-  background: #2a2a2a;
-  padding: 10px;
-  border-radius: 5px;
-  display: inline-block;
+  font-weight: 600;
+  text-align: center;
+  max-width: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 2px;
 }
 
 .referral-link {
-  background: #292929;
-  padding: 8px;
-  border-radius: 5px;
-  display: inline-block;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 0.9);
   word-break: break-all;
+  margin: 1rem 0;
+  display: inline-block;
 }
 
 ul {
   list-style-type: none;
   padding: 0;
+  margin: 1.5rem 0;
 }
 
 li {
-  background: #2a2a2a;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 8px;
-  text-align: left;
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
 }
 
 .user-info p {
-  margin: 5px 0;
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.user-info strong {
+  color: rgba(0, 255, 255, 0.9);
 }
 
 .coins {
-  color: #ffd700;
-  font-weight: bold;
+  color: rgba(0, 255, 255, 0.9) !important;
+  font-size: 1.1rem;
 }
 
-.copy-btn, .share-btn {
-  background-color: #0ff;
-  border: none;
-  color: white;
-  padding: 8px 12px;
-  margin-left: 10px;
+button {
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  padding: 0.75rem 1.5rem;
+  color: rgba(0, 255, 255, 0.7);
+  border-radius: 15px;
   cursor: pointer;
-  border-radius: 5px;
-  font-weight: bold;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  margin: 0.5rem;
 }
 
-.copy-btn:hover, .share-btn:hover {
-  background-color: #ffcc00;
+button:hover {
+  background: rgba(0, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
 }
 
+.referral p {
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+}
+
+.share-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 1.5rem;
+  margin: 1.5rem auto;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 600px;
+}
+
+@media (max-width: 768px) {
+  .referral {
+    padding: 0.75rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  .referral-code {
+    font-size: 1.2rem;
+    padding: 1rem;
+    margin: 1rem auto;
+    letter-spacing: 1px;
+  }
+
+  .referral-link {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  li {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .user-info p {
+    font-size: 0.9rem;
+  }
+
+  button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    margin: 0.3rem;
+  }
+}
 </style>

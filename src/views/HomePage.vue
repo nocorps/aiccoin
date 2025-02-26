@@ -102,20 +102,24 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  background: linear-gradient(145deg, #1d1d1d, #2d2d2d);
+  padding-bottom: 100px; /* Space for bottom nav */
 }
 
 .balance-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 .balance-header {
@@ -135,7 +139,7 @@ export default {
 .coin-image {
   width: 60px;
   height: 60px;
-  filter: drop-shadow(0 0 15px #ffd700);
+  filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.5));
 }
 
 .animate-spin {
@@ -155,10 +159,10 @@ export default {
 .coin {
   font-size: 3rem;
   font-weight: 700;
-  background: linear-gradient(45deg, #ffd700, #ff9d00);
+  background: linear-gradient(45deg, #0ff, #00ccff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
 
 .currency {
@@ -167,9 +171,15 @@ export default {
 }
 
 .transactions-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
   padding: 1.5rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .transactions-card h2 {
@@ -190,12 +200,14 @@ export default {
   gap: 1rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  transition: transform 0.2s ease;
+  border-radius: 15px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .transaction-item:hover {
-  transform: translateX(5px);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
 }
 
 .tx-icon {
@@ -228,24 +240,31 @@ export default {
 .tx-info {
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* Add this to contain overflow */
+  max-width: 100%; /* Ensure it doesn't exceed parent width */
 }
 
 .tx-amount {
   font-weight: 600;
   font-size: 1.1rem;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
 .tx-amount.credit {
-  color: #00ff00;
+  color: rgba(0, 255, 255, 0.9);
 }
 
 .tx-amount.debit {
-  color: #ff0000;
+  color: rgba(255, 99, 99, 0.9);
 }
 
 .tx-reason {
   color: #888;
   font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Limit width on desktop */
 }
 
 .tx-date {
@@ -253,17 +272,61 @@ export default {
   font-size: 0.9rem;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .container {
     padding: 1rem;
   }
   
-  .balance-card {
-    padding: 1.5rem;
+  .balance-card, .transactions-card {
+    padding: 1.25rem;
+    border-radius: 20px;
   }
-  
+
   .coin {
     font-size: 2.5rem;
+  }
+
+  .tx-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%; /* Ensure full width */
+  }
+
+  .tx-info {
+    width: 100%;
+  }
+
+  .tx-date {
+    width: 100%;
+    text-align: left;
+    font-size: 0.8rem;
+    color: rgba(136, 136, 136, 0.8);
+  }
+
+  .transaction-item {
+    flex-wrap: wrap; /* Allow items to wrap on small screens */
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .tx-icon {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;  /* Prevent icon from shrinking */
+    font-size: 0.9rem;
+  }
+
+  .tx-amount {
+    font-size: 1rem;
+  }
+
+  .tx-reason {
+    font-size: 0.85rem;
+    max-width: 100%; /* Full width on mobile */
+    white-space: normal; /* Allow text to wrap */
+    word-break: break-word; /* Break long words if needed */
+    line-height: 1.2; /* Adjust line height for readability */
   }
 }
 </style>

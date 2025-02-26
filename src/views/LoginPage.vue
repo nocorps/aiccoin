@@ -106,95 +106,141 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   padding: 20px;
-  box-sizing: border-box;
-  background: linear-gradient(135deg, #1d1d1d, #363636);
-  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(145deg, #1d1d1d, #2d2d2d);
 }
 
 h2 {
-  margin-bottom: 20px;
   color: #fff;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  background: linear-gradient(45deg, #0ff, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 2rem;
   width: 100%;
   max-width: 400px;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .input {
-  margin-bottom: 15px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #444;
-  border-radius: 5px;
-  background-color: #2e2e2e;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 15px;
   color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
 .input:focus {
-  border-color: #42b983;
   outline: none;
+  border-color: rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
 }
 
 .button {
-  padding: 10px;
-  font-size: 16px;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  width: 100%;
+  padding: 12px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 15px;
+  color: rgba(0, 255, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
 }
 
 .button:hover {
-  background-color: #369870;
+  background: rgba(0, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
 }
 
 .error-message {
-  color: red;
-  margin-top: 10px;
+  color: rgba(255, 77, 77, 0.9);
+  background: rgba(255, 77, 77, 0.1);
+  padding: 12px;
+  border-radius: 15px;
+  margin-top: 1rem;
   text-align: center;
+  border: 1px solid rgba(255, 77, 77, 0.2);
 }
 
 .forgot-password {
-  margin-top: 10px;
   background: none;
   border: none;
-  color: #42b983;
+  color: rgba(0, 255, 255, 0.7);
   cursor: pointer;
-  font-size: 14px;
-  text-decoration: underline;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
 }
 
 .forgot-password:hover {
-  color: #369870;
+  color: rgba(0, 255, 255, 0.9);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
 .forgot-password-section {
-  margin-top: 15px;
+  margin-top: 1rem;
   width: 100%;
   max-width: 400px;
 }
 
 .link {
-  margin-top: 15px;
-  color: #42b983;
+  color: rgba(0, 255, 255, 0.7);
   text-decoration: none;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
 }
 
 .link:hover {
-  text-decoration: underline;
+  color: rgba(0, 255, 255, 0.9);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
-@media (max-width: 600px) {
-  .input, .button {
-    font-size: 14px;
-    padding: 8px;
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form {
+    padding: 1.5rem;
+  }
+
+  .input, 
+  .button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .forgot-password,
+  .link {
+    font-size: 0.8rem;
   }
 }
 </style>
