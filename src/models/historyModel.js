@@ -1,21 +1,20 @@
+// src/models/historyModel.js
 import { db } from '../firebase';
-import { doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const addCoinHistory = async (userId, amount, reason) => {
+const addCoinHistory = async (userId, amount, type, reason = '') => {
   try {
-    const userDocRef = doc(db, 'users', userId);
-
-    await updateDoc(userDocRef, {
-      coinHistory: arrayUnion({
-        amount,
-        reason,
-        timestamp: serverTimestamp(),
-      }),
+    const coinHistoryRef = collection(db, "coinHistory");
+    await addDoc(coinHistoryRef, {
+      userId,
+      amount,
+      type, // 'credit' or 'debit'
+      reason,
+      timestamp: serverTimestamp()
     });
-
-    console.log(`✅ History recorded in user document: ${amount} coins for ${reason}`);
+    console.log(`✅ Transaction recorded: ${type} of ${amount} coins`);
   } catch (error) {
-    console.error("❌ Error storing coin history: ", error);
+    console.error("❌ Error recording transaction:", error);
   }
 };
 

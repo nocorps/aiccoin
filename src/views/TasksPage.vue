@@ -39,6 +39,7 @@
 <script>
 import { db, auth } from "@/firebase";
 import { collection, getDocs, updateDoc, doc, arrayUnion, increment, getDoc } from "firebase/firestore";
+import { updateCoinBalance } from '../models/userModel';
 
 export default {
   data() {
@@ -98,7 +99,8 @@ export default {
       if (this.enteredSecret === this.currentTask.secret) {
         this.currentTask.completed = true;
         this.currentTask.inProgress = false;
-        await this.updateUserTaskData(this.currentTask);
+        await updateCoinBalance(auth.currentUser.uid, this.currentTask.award,
+          `Completed task: ${this.currentTask.title}`);
         alert("Task verified! Reward added.");
         this.closeModal();
       } else {

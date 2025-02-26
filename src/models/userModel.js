@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { doc, setDoc, updateDoc, arrayUnion, increment, getDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayUnion, increment, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { addCoinHistory } from '../models/historyModel';
 // Create a new user in Firestore
 const createUserDocument = async (userId, userDetails) => {
@@ -11,8 +11,8 @@ const createUserDocument = async (userId, userDetails) => {
       referralCode: userDetails.referralCode,  // User's unique referral code
       referralUsed: userDetails.referralUsed || '',  // Referral code used (if any)
       //referredUsers: [], // Store referred users
-      coinBalance: userDetails.coinBalance ||  0,  
-      tasksCompleted: userDetails.tasksCompleted || 0,  
+      coinBalance: userDetails.coinBalance || 0,
+      tasksCompleted: userDetails.tasksCompleted || 0,
       //adsWatched: 0,
       country: userDetails.country || '', // Store country of the user
     });
@@ -53,6 +53,9 @@ const updateReferralSystem = async (referralCode, newUserId, newUserEmail, newUs
         }),
         coinBalance: increment(bonusAmount) // Add referral bonus
       });
+      // const bonusAmount = Math.floor((bonusPercentage / 100) * newUserCoinBalance);
+      await updateCoinBalance(referrerId, bonusAmount,
+        `Referral bonus from ${newUserEmail}`);
       console.log(`Referral bonus of ${bonusAmount} coins given to ${referrerData.email}`);
     } else {
       console.error('No user found with the provided referral code.');
@@ -64,14 +67,15 @@ const updateReferralSystem = async (referralCode, newUserId, newUserEmail, newUs
 // Update coin balance
 const updateCoinBalance = async (userId, amount, reason) => {
   const userDocRef = doc(db, 'users', userId);
+  const type = amount >= 0 ? 'credit' : 'debit';
+
   try {
     await updateDoc(userDocRef, {
       coinBalance: increment(amount)
     });
-    await addCoinHistory(userId, amount, reason);
-    console.log(`✅ Coin balance updated by ${amount} coins for: ${reason}`);
+    await addCoinHistory(userId, Math.abs(amount), type, reason);
   } catch (error) {
-    console.error("❌ Error updating coin balance and storing history: ", error);
+    console.error("Error updating coin balance:", error);
   }
 };
 // Update ads watched
