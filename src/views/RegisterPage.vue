@@ -314,13 +314,14 @@ export default {
 .register-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* Change from center to flex-start */
   align-items: center;
   min-height: 100vh;
   padding: 20px;
   background: linear-gradient(145deg, #1d1d1d, #2d2d2d);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  position: relative; /* Add position relative */
 }
 
 h2 {
@@ -455,22 +456,25 @@ h2 {
 @media (max-width: 768px) {
   .register-container {
     padding: 1rem;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    height: auto; /* Change min-height to height: auto */
+    justify-content: flex-start;
+    padding-top: 2rem; /* Add some top padding */
   }
 
   h2 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
+    margin-top: 1rem; /* Add top margin */
   }
 
   .register-form {
     width: 100%;
+    max-width: 100%; /* Ensure form takes full width on mobile */
     padding: 1.5rem;
     margin: 0 auto;
-    border-radius: 25px;
+    border-radius: 20px;
+    overflow-y: auto; /* Add scroll for long forms */
+    -webkit-overflow-scrolling: touch;
   }
 
   .input-field {
@@ -560,6 +564,18 @@ select.input-field option[value=""] {
     background-size: 16px;
     padding-right: 40px;
     font-size: 0.95rem;
+  }
+}
+
+/* Add touch-friendly styles */
+@media (hover: none) {
+  .input-field:focus {
+    font-size: 16px !important;
+  }
+
+  .submit-button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 </style>
