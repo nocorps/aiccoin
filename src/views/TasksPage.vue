@@ -1,7 +1,9 @@
 <template>
   <div class="task-container">
-    <!-- Add Toast component -->
     <Toast :toasts="toasts" />
+    
+    <!-- Update the note section structure -->
+    
     
     <h2>📌 Available Tasks</h2>
     <div class="task-list">
@@ -25,6 +27,32 @@
           <span></span>
           <span></span>
           <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-card">
+      <h2>📝 Instructions</h2>
+      <div class="note-steps">
+        <div class="step-item">
+          <span class="step-number">1</span>
+          <p>Read the task description</p>
+        </div>
+        <div class="step-item">
+          <span class="step-number">2</span>
+          <p>Start the task</p>
+        </div>
+        <div class="step-item">
+          <span class="step-number">3</span>
+          <p>Finish the task that mentioned in the task description</p>
+        </div>
+        <div class="step-item">
+          <span class="step-number">4</span>
+          <p>Collect your Secret code from there</p>
+        </div>
+        <div class="step-item">
+          <span class="step-number">5</span>
+          <p>Click the verify in the task and enter your Secret code and verify</p>
         </div>
       </div>
     </div>
@@ -339,6 +367,74 @@ button:hover {
   margin-bottom: 1.5rem;
 }
 
+/* Add these new styles with your existing styles */
+.note-card {
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.note-card h2 {
+  color: rgba(0, 255, 255, 0.9);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  background: linear-gradient(45deg, #0ff, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.note-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.step-item:hover {
+  transform: translateX(5px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(0, 255, 255, 0.2);
+}
+
+.step-number {
+  background: rgba(0, 255, 255, 0.1);
+  color: rgba(0, 255, 255, 0.9);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.step-item p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Add responsive styles */
 @media (max-width: 768px) {
   .task-container {
     padding: 0.75rem;
@@ -387,6 +483,30 @@ button:hover {
 
   .no-tasks p {
     font-size: 0.95rem;
+  }
+
+  .note-card {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .note-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .step-item {
+    padding: 0.6rem;
+  }
+
+  .step-number {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+
+  .step-item p {
+    font-size: 0.9rem;
   }
 }
 </style>

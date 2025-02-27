@@ -3,7 +3,7 @@
     <div class="balance-card">
       <div class="balance-header">
         <img :src="coinImage" alt="Coin Icon" class="coin-image animate-spin" />
-        <h1>AIC Coin Balance</h1>
+        <h1>Ancient Ice Crystal</h1>
       </div>
       <div class="balance-amount">
         <span class="coin">{{ coinBalance }}</span>
@@ -38,7 +38,7 @@ import { ref, onMounted } from "vue";
 import { db } from "../firebase";
 import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import coinImage from "@/assets/coin.png";
+import coinImage from "@/assets/coin1.png";
 
 export default {
   setup() {
