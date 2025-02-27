@@ -140,14 +140,26 @@ export default {
   width: 60px;
   height: 60px;
   filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.5));
+  animation: spin 4s linear infinite; /* Added infinite rotation */
 }
 
-.animate-spin {
+/* Remove or comment out the hover animation */
+/* .animate-spin {
   transition: transform 0.3s ease;
 }
 
 .animate-spin:hover {
   transform: rotate(360deg);
+} */
+
+/* Add keyframes for continuous rotation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .balance-amount {
