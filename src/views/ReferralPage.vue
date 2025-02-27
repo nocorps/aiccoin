@@ -73,8 +73,8 @@ export default {
 
     // Generate referral link
     const referralLink = computed(() => {
-      return user.value ? `https://t.me/AIC_Coin_Bot/AIC/register?ref=${user.value.referralCode}` : '';
-      //return user.value ? `${window.location.origin}/register?ref=${user.value.referralCode}` : '';
+      // return user.value ? `https://t.me/AIC_Coin_Bot/AIC/register?ref=${user.value.referralCode}` : '';
+      return user.value ? `${window.location.origin}/register?ref=${user.value.referralCode}` : '';
     });
 
     // Copy referral link to clipboard
