@@ -1,65 +1,116 @@
 <template>
-  <div class="ranking-container">
-    <h2>🌎 Global Rankings</h2>
-    <div class="filters">
-      <button @click="fetchGlobalRanking('coinBalance')">By Coin Balance</button>
-      <button @click="fetchGlobalRanking('taskCount')">By Tasks Completed</button>
-    </div>
-    <p v-if="currentUserGlobalRank" class="user-rank">
-      Your rank: <span>#{{ currentUserGlobalRank.rank }}</span> | 💰 {{ currentUserGlobalRank.coinBalance }} | 📋 {{ currentUserGlobalRank.taskCount }}
+  <div class="referral">
+    <h2>Your Referral Code</h2>
+    <p class="referral-code">{{ user?.referralCode }}</p>
+
+    <h3>Invite Friends</h3>
+    <p>
+      Share this link: 
+      <strong class="referral-link">{{ referralLink }}</strong>
+      <button @click="copyReferralLink" class="copy-btn">Copy</button>
+      <button @click="shareReferralLink" class="share-btn">Share</button>
     </p>
-    <br/>
-    <ul>
-      <li v-for="(user, index) in globalRankings" :key="user.uid">
-        <span class="rank">{{ index + 1 }}</span>
-        <strong>{{ user.name }}</strong> - 💰 {{ user.coinBalance }} | 📋 {{ user.taskCount }}
+
+    <h3>People who joined using your code:</h3>
+    <ul v-if="referredUsers.length">
+      <li v-for="(refUser, index) in referredUsers" :key="refUser.uid">
+        <div class="user-info">
+          <strong>#{{ index + 1 }}</strong>
+          <p><strong>Name:</strong> {{ refUser.name }}</p>
+          <p><strong>Country:</strong> {{ refUser.country }}</p>
+          <!-- <p><strong>Email:</strong> {{ refUser.email }}</p> -->
+          <p class="coins"><strong>Coins:</strong> {{ refUser.coinBalance }} 🪙</p>
+        </div>
       </li>
     </ul>
-    <br/><br/>
+    <p v-else>No referrals yet. Start inviting friends! 🚀</p>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import { getGlobalRanking } from '../models/rankingModel';
-import { getAuth } from 'firebase/auth';
-import { db } from '../firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { ref, onMounted, computed } from 'vue';
 
 export default {
   setup() {
-    const globalRankings = ref([]);
-    const currentUserGlobalRank = ref(null);
-    const auth = getAuth();
+    const user = ref(null);
+    const referredUsers = ref([]);
     const userId = auth.currentUser?.uid;
 
-    const fetchGlobalRanking = async (sortBy) => {
-      globalRankings.value = await getGlobalRanking(sortBy);
-      updateUserRank(globalRankings.value, sortBy);
-    };
-
-    const updateUserRank = (rankings, sortBy) => {
-      const userRank = rankings.findIndex(user => user.uid === userId);
-      if (userRank !== -1) {
-        currentUserGlobalRank.value = { rank: userRank + 1, ...rankings[userRank] };
+    // Fetch current user data
+    const fetchUserData = async () => {
+      if (!userId) return;
+      try {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          user.value = userDoc.data();
+          fetchReferredUsers(user.value.referralCode);
+        } else {
+          console.log("User not found.");
+        }
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
       }
     };
 
-    onMounted(() => {
-      fetchGlobalRanking('coinBalance');
+    // Fetch referred users based on referral code
+    const fetchReferredUsers = async (referralCode) => {
+      if (!referralCode) return;
+      try {
+        const q = query(collection(db, 'users'), where('referralUsed', '==', referralCode));
+        const querySnapshot = await getDocs(q);
+        referredUsers.value = querySnapshot.docs.map(doc => ({
+          uid: doc.id,
+          ...doc.data()
+        }));
+      } catch (error) {
+        console.error("Error fetching referred users: ", error);
+      }
+    };
+
+    onMounted(fetchUserData);
+
+    // Generate referral link
+    const referralLink = computed(() => {
+      return user.value ? `${window.location.origin}/register?ref=${user.value.referralCode}` : '';
     });
 
-    return {
-      globalRankings,
-      fetchGlobalRanking,
-      currentUserGlobalRank
+    // Copy referral link to clipboard
+    const copyReferralLink = () => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(referralLink.value).then(() => {
+          alert("Referral link copied to clipboard!");
+        }).catch((error) => {
+          console.error("Error copying link:", error);
+        });
+      }
     };
+
+    // Share referral link using the Web Share API
+    const shareReferralLink = () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Join me on AIC Coin!',
+          text: 'Check out AIC Coin, and use my referral code!',
+          url: referralLink.value,
+        }).then(() => {
+          console.log("Link shared successfully");
+        }).catch((error) => {
+          console.error("Error sharing link:", error);
+        });
+      } else {
+        alert("Sharing is not supported on your browser.");
+      }
+    };
+
+    return { user, referralLink, referredUsers, copyReferralLink, shareReferralLink };
   }
 };
 </script>
 
 <style scoped>
-.ranking-container {
+.referral {
   max-width: 100%;
   margin: 0 auto;
   padding: 1rem;
@@ -68,23 +119,93 @@ export default {
   padding-bottom: 100px;
 }
 
-.filters {
+h2, h3 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  background: linear-gradient(45deg, #0ff, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+.referral-code {
   background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
   backdrop-filter: blur(10px);
   border-radius: 25px;
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin: 1.5rem auto;
   box-shadow: 
     0 10px 25px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(0, 255, 255, 0.15),
     inset 0 0 20px rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(0, 255, 255, 0.9);
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  max-width: 400px;
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  align-items: center;
+  letter-spacing: 2px;
 }
 
-.filters button {
+.referral-link {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 0.9);
+  word-break: break-all;
+  margin: 1rem 0;
+  display: inline-block;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+li {
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
+}
+
+.user-info p {
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.user-info strong {
+  color: rgba(0, 255, 255, 0.9);
+}
+
+.coins {
+  color: rgba(0, 255, 255, 0.9) !important;
+  font-size: 1.1rem;
+}
+
+button {
   background: rgba(0, 255, 255, 0.1);
   border: 1px solid rgba(0, 255, 255, 0.2);
   padding: 0.75rem 1.5rem;
@@ -93,130 +214,79 @@ export default {
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
+  margin: 0.5rem;
 }
 
-.filters button:hover {
+button:hover {
   background: rgba(0, 255, 255, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
 }
 
-h2 {
-  color: #fff;
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
+.referral p {
+  color: rgba(255, 255, 255, 0.9);
   text-align: center;
+  margin: 1rem 0;
+  font-size: 1.1rem;
 }
 
-ul {
-  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
-  backdrop-filter: blur(10px);
-  border-radius: 25px;
-  padding: 1.5rem;
-  box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(0, 255, 255, 0.15),
-    inset 0 0 20px rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  list-style: none;
-}
-
-/* Update text colors and styles */
-li {
+.share-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
-  color: rgba(255, 255, 255, 0.9); /* Added text color */
-  gap: 1rem; /* Added gap between elements */
-}
-
-li strong {
-  color: rgba(0, 255, 255, 0.9); /* Cyan color for names */
-  font-weight: 500;
-}
-
-li span {
-  color: rgba(255, 255, 255, 0.8); /* Light color for other text */
-}
-
-.rank {
-  background: linear-gradient(45deg, #0ff, #00ccff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 1.2rem;
-  font-weight: bold;
-  min-width: 2.5rem;
-  text-align: center;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-}
-
-.user-rank {
+  gap: 1rem;
   background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
   backdrop-filter: blur(10px);
   border-radius: 25px;
   padding: 1.5rem;
-  margin-top: 1.5rem;
+  margin: 1.5rem auto;
   box-shadow: 
     0 10px 25px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(0, 255, 255, 0.15),
     inset 0 0 20px rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
-  color: rgba(255, 255, 255, 0.9); /* Updated text color */
-}
-
-.user-rank span {
-  color: rgba(0, 255, 255, 0.9); /* Cyan color for rank number */
-  font-weight: bold;
+  max-width: 600px;
 }
 
 @media (max-width: 768px) {
-  .ranking-container {
-    padding: 1rem;
-  }
-
-  .filters {
-    padding: 1rem;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .filters button {
-    width: 100%;
+  .referral {
     padding: 0.75rem;
-    font-size: 0.9rem;
   }
 
   h2 {
     font-size: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  .referral-code {
+    font-size: 1.2rem;
+    padding: 1rem;
+    margin: 1rem auto;
+    letter-spacing: 1px;
+  }
+
+  .referral-link {
+    padding: 0.6rem;
+    font-size: 0.9rem;
   }
 
   li {
-    padding: 0.75rem;
-    font-size: 0.9rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: space-between; /* Better spacing on mobile */
-  }
-
-  li strong {
-    min-width: 120px; /* Ensure names have enough space */
-  }
-
-  .rank {
-    font-size: 1rem;
-    min-width: 2rem;
-  }
-
-  .user-rank {
     padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .user-info p {
     font-size: 0.9rem;
-    margin-top: 1rem;
+  }
+
+  button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    margin: 0.3rem;
   }
 }
 </style>

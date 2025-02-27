@@ -40,54 +40,54 @@
           <option value="Belarus">Belarus 🇧🇾</option>
           <option value="Belgium">Belgium 🇧🇪</option>
           <option value="Belize">Belize 🇧🇿</option>
-          <option value="Benin">Benin 🇧🇯</option>
-          <option value="Bhutan">Bhutan 🇧🇹</option>
-          <option value="Bolivia">Bolivia 🇧🇴</option>
-          <option value="Bosnia and Herzegovina">Bosnia and Herzegovina 🇧🇦</option>
-          <option value="Botswana">Botswana 🇧🇼</option>
-          <option value="Brazil">Brazil 🇧🇷</option>
-          <option value="Brunei">Brunei 🇧🇳</option>
-          <option value="Bulgaria">Bulgaria 🇧🇬</option>
-          <option value="Burkina Faso">Burkina Faso 🇧🇫</option>
-          <option value="Burundi">Burundi 🇧🇮</option>
-          <option value="Cabo Verde">Cabo Verde 🇨🇻</option>
-          <option value="Cambodia">Cambodia 🇰🇭</option>
-          <option value="Cameroon">Cameroon 🇨🇲</option>
-          <option value="Canada">Canada 🇨🇦</option>
-          <option value="Central African Republic">Central African Republic 🇨🇫</option>
-          <option value="Chad">Chad 🇹🇩</option>
-          <option value="Chile">Chile 🇨🇱</option>
-          <option value="China">China 🇨🇳</option>
-          <option value="Colombia">Colombia 🇨🇴</option>
-          <option value="Comoros">Comoros 🇰🇲</option>
-          <option value="Congo (Congo-Brazzaville)">Congo 🇨🇬</option>
-          <option value="Congo (Democratic Republic)">Congo (Democratic Republic) 🇨🇩</option>
-          <option value="Costa Rica">Costa Rica 🇨🇷</option>
-          <option value="Croatia">Croatia 🇭🇷</option>
-          <option value="Cuba">Cuba 🇨🇺</option>
-          <option value="Cyprus">Cyprus 🇨🇾</option>
-          <option value="Czech Republic (Czechia)">Czech Republic 🇨🇿</option>
-          <option value="Denmark">Denmark 🇩🇰</option>
+          <option value="Benin">Benin 🇧ḯ</option>
+          <option value="Bhutan">Bhutan 🇧ṯ</option>
+          <option value="Bolivia">Bolivia 🇧ṏ</option>
+          <option value="Bosnia and Herzegovina">Bosnia and Herzegovina 🇧ḁ</option>
+          <option value="Botswana">Botswana 🇧ẃ</option>
+          <option value="Brazil">Brazil 🇧ṙ</option>
+          <option value="Brunei">Brunei 🇧ṉ</option>
+          <option value="Bulgaria">Bulgaria 🇧ḡ</option>
+          <option value="Burkina Faso">Burkina Faso 🇧ḟ</option>
+          <option value="Burundi">Burundi 🇧ḯ</option>
+          <option value="Cabo Verde">Cabo Verde 🇨ṽ</option>
+          <option value="Cambodia">Cambodia 🇰ḣ</option>
+          <option value="Cameroon">Cameroon 🇨ḿ</option>
+          <option value="Canada">Canada 🇨ḁ</option>
+          <option value="Central African Republic">Central African Republic 🇨ḟ</option>
+          <option value="Chad">Chad 🇹ḏ</option>
+          <option value="Chile">Chile 🇨ḷ</option>
+          <option value="China">China 🇨ṉ</option>
+          <option value="Colombia">Colombia 🇨ṏ</option>
+          <option value="Comoros">Comoros 🇰ḿ</option>
+          <option value="Congo (Congo-Brazzaville)">Congo 🇨ḡ</option>
+          <option value="Congo (Democratic Republic)">Congo (Democratic Republic) 🇨ḏ</option>
+          <option value="Costa Rica">Costa Rica 🇨ṙ</option>
+          <option value="Croatia">Croatia 🇭ṙ</option>
+          <option value="Cuba">Cuba 🇨ṳ</option>
+          <option value="Cyprus">Cyprus 🇨ẏ</option>
+          <option value="Czech Republic (Czechia)">Czech Republic 🇨ẓ</option>
+          <option value="Denmark">Denmark 🇩ḳ</option>
           <option value="Djibouti">Djibouti 🇩ḯ</option>
           <option value="Dominica">Dominica 🇩ḿ</option>
           <option value="Dominican Republic">Dominican Republic 🇩ḯ</option>
-          <option value="Ecuador">Ecuador 🇪🇨</option>
-          <option value="Egypt">Egypt 🇪🇬</option>
-          <option value="El Salvador">El Salvador 🇸🇻</option>
-          <option value="Equatorial Guinea">Equatorial Guinea 🇬🇶</option>
-          <option value="Eritrea">Eritrea 🇪🇷</option>
-          <option value="Estonia">Estonia 🇪🇪</option>
-          <option value="Eswatini">Eswatini 🇸🇿</option>
-          <option value="Ethiopia">Ethiopia 🇪🇹</option>
-          <option value="Fiji">Fiji 🇫🇯</option>
-          <option value="Finland">Finland 🇫🇮</option>
-          <option value="France">France 🇫🇷</option>
-          <option value="Gabon">Gabon 🇬🇦</option>
+          <option value="Ecuador">Ecuador 🇪ḉ</option>
+          <option value="Egypt">Egypt 🇪ḡ</option>
+          <option value="El Salvador">El Salvador 🇸ṽ</option>
+          <option value="Equatorial Guinea">Equatorial Guinea 🇬ṳ</option>
+          <option value="Eritrea">Eritrea 🇪ṙ</option>
+          <option value="Estonia">Estonia 🇪ḝ</option>
+          <option value="Eswatini">Eswatini 🇸ẓ</option>
+          <option value="Ethiopia">Ethiopia 🇪ṯ</option>
+          <option value="Fiji">Fiji 🇫ḯ</option>
+          <option value="Finland">Finland 🇫ḯ</option>
+          <option value="France">France 🇫ṙ</option>
+          <option value="Gabon">Gabon 🇬ḁ</option>
           <option value="Gambia">Gambia 🇬ḿ</option>
           <option value="Georgia">Georgia 🇬ḛ</option>
           <option value="Germany">Germany 🇩ḛ</option>
           <option value="Ghana">Ghana 🇬ḧ</option>
-          <option value="Greece">Greece 🇬🇷</option>
+          <option value="Greece">Greece 🇬ṙ</option>
           <option value="Grenada">Grenada 🇬ḏ</option>
           <option value="Guatemala">Guatemala 🇬ṯ</option>
           <option value="Guinea">Guinea 🇬ḯ</option>
@@ -455,6 +455,10 @@ h2 {
 @media (max-width: 768px) {
   .register-container {
     padding: 1rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   h2 {
@@ -463,11 +467,15 @@ h2 {
   }
 
   .register-form {
+    width: 100%;
     padding: 1.5rem;
+    margin: 0 auto;
     border-radius: 25px;
   }
 
   .input-field {
+    width: 100%;
+    font-size: 16px; /* Prevent iOS zoom on focus */
     padding: 12px 14px;
     font-size: 0.95rem;
   }
@@ -483,6 +491,12 @@ h2 {
 
   .input-group:last-of-type {
     margin-bottom: 1.25rem;
+  }
+
+  select.input-field {
+    background-size: 16px;
+    padding-right: 40px; /* Space for dropdown arrow */
+    font-size: 0.95rem;
   }
 }
 
