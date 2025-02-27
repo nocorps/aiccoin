@@ -1,5 +1,8 @@
 <template>
   <div class="task-container">
+    <!-- Add Toast component -->
+    <Toast :toasts="toasts" />
+    
     <h2>📌 Available Tasks</h2>
     <div class="task-list">
       <template v-if="availableTasks.length">
@@ -54,8 +57,13 @@
 import { db, auth } from "@/firebase";
 import { collection, getDocs, updateDoc, doc, arrayUnion, increment, getDoc } from "firebase/firestore";
 import { updateCoinBalance } from '../models/userModel';
+// import Toast from '../components/Toast.vue';
+import Toast from '../components/TostAlert.vue';
 
 export default {
+  components: {
+    Toast
+  },
   data() {
     return {
       tasks: [],
@@ -63,6 +71,8 @@ export default {
       isModalOpen: false, // Controls the visibility of the modal
       enteredSecret: '',  // Holds the entered secret code
       currentTask: null,  // The task that is being verified
+      toasts: [], // Add this for toast messages
+      toastCounter: 0
     };
   },
   async created() {
@@ -128,13 +138,13 @@ export default {
 
           // Close modal and show success message
           this.closeModal();
-          alert("Task verified! Reward added.");
+          this.showToast('Task verified! Reward added. 🎉');
         } catch (error) {
           console.error("Error updating task status:", error);
-          alert("Error updating task status. Please try again.");
+          this.showToast('Error updating task status. Please try again.', 'error');
         }
       } else {
-        alert("Incorrect secret. Please try again.");
+        this.showToast('Incorrect secret code. Please try again. ❌', 'error');
       }
     },
     async updateUserTaskData(task) {
@@ -148,6 +158,14 @@ export default {
         });
         this.userCompletedTasks.push(task.task_id);
       }
+    },
+    // Add toast methods
+    showToast(message, type = 'success') {
+      const id = this.toastCounter++;
+      this.toasts.push({ id, message, type });
+      setTimeout(() => {
+        this.toasts = this.toasts.filter(toast => toast.id !== id);
+      }, 3000);
     },
   },
 };

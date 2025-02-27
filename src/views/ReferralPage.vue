@@ -1,5 +1,6 @@
 <template>
   <div class="referral">
+    <Toast :toasts="toasts" />
     <h2>Your Referral Code</h2>
     <p class="referral-code">{{ user?.referralCode }}</p>
 
@@ -31,12 +32,29 @@
 import { auth, db } from '../firebase';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { ref, onMounted, computed } from 'vue';
+// import Toast from '../components/Toast.vue';
+import Toast from '../components/TostAlert.vue';
 
 export default {
+  components: {
+    Toast
+  },
+
   setup() {
     const user = ref(null);
     const referredUsers = ref([]);
+    const toasts = ref([]);
+    const toastCounter = ref(0);
     const userId = auth.currentUser?.uid;
+
+    // Add toast show method
+    const showToast = (message, type = 'success') => {
+      const id = toastCounter.value++;
+      toasts.value.push({ id, message, type });
+      setTimeout(() => {
+        toasts.value = toasts.value.filter(toast => toast.id !== id);
+      }, 3000);
+    };
 
     // Fetch current user data
     const fetchUserData = async () => {
@@ -80,11 +98,14 @@ export default {
     // Copy referral link to clipboard
     const copyReferralLink = () => {
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(referralLink.value).then(() => {
-          alert("Referral link copied to clipboard!");
-        }).catch((error) => {
-          console.error("Error copying link:", error);
-        });
+        navigator.clipboard.writeText(referralLink.value)
+          .then(() => {
+            showToast('Referral link copied to clipboard! 📋', 'success');
+          })
+          .catch((error) => {
+            console.error("Error copying link:", error);
+            showToast('Failed to copy link ❌', 'error');
+          });
       }
     };
 
@@ -95,17 +116,27 @@ export default {
           title: 'Join me on AIC Coin!',
           text: 'Check out AIC Coin, and use my referral code!',
           url: referralLink.value,
-        }).then(() => {
-          console.log("Link shared successfully");
-        }).catch((error) => {
+        })
+        .then(() => {
+          showToast('Link shared successfully! 🚀', 'success');
+        })
+        .catch((error) => {
           console.error("Error sharing link:", error);
+          showToast('Failed to share link ❌', 'error');
         });
       } else {
-        alert("Sharing is not supported on your browser.");
+        showToast('Sharing is not supported on your browser 🔒', 'error');
       }
     };
 
-    return { user, referralLink, referredUsers, copyReferralLink, shareReferralLink };
+    return {
+      user,
+      referralLink,
+      referredUsers,
+      copyReferralLink,
+      shareReferralLink,
+      toasts
+    };
   }
 };
 </script>

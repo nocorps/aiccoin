@@ -22,46 +22,58 @@ const createUserDocument = async (userId, userDetails) => {
 };
 const updateReferralSystem = async (referralCode, newUserId, newUserEmail, newUserCoinBalance) => {
   try {
-    // Query to find the referrer based on the referralCode
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('referralCode', '==', referralCode));
     const querySnapshot = await getDocs(q);
+    
     if (!querySnapshot.empty) {
-      // Get referrer's data
       const referrerDoc = querySnapshot.docs[0];
       const referrerId = referrerDoc.id;
       const referrerData = referrerDoc.data();
       const referrerDocRef = doc(db, 'users', referrerId);
+      
       // Get total referred users count
       const referredUsersCount = referrerData.referredUsers ? referrerData.referredUsers.length : 0;
+      
       // Determine bonus percentage based on referral count
-      let bonusPercentage = 10;
-      if (referredUsersCount > 10) {
-        bonusPercentage = 20;
+      let bonusPercentage = 10; // Default 10% for < 10 referrals
+      
+      if (referredUsersCount > 100) {
+        bonusPercentage = 45; // 45% for > 100 referrals
+      } else if (referredUsersCount > 10) {
+        bonusPercentage = 25; // 25% for > 10 referrals
       }
-      if (referredUsersCount >= 142) {
-        bonusPercentage = 45;
-      }
-      // Calculate the bonus amount
+      
+      // Calculate bonus amount
       const bonusAmount = Math.floor((bonusPercentage / 100) * newUserCoinBalance);
-      // Update referrer’s document
+      
+      // Update referrer's document
       await updateDoc(referrerDocRef, {
         referredUsers: arrayUnion({
           uid: newUserId,
           email: newUserEmail,
           coinBalance: newUserCoinBalance,
+          bonusReceived: bonusAmount,
+          bonusPercentage: bonusPercentage,
+          timestamp: new Date()
         }),
-        coinBalance: increment(bonusAmount) // Add referral bonus
+        coinBalance: increment(bonusAmount)
       });
-      // const bonusAmount = Math.floor((bonusPercentage / 100) * newUserCoinBalance);
-      await updateCoinBalance(referrerId, bonusAmount,
-        `Referral bonus from ${newUserEmail}`);
-      console.log(`Referral bonus of ${bonusAmount} coins given to ${referrerData.email}`);
-    } else {
-      console.error('No user found with the provided referral code.');
+
+      // Add to coin history
+      await addCoinHistory(
+        referrerId, 
+        bonusAmount, 
+        'credit', 
+        `Referral bonus (${bonusPercentage}%) from ${newUserEmail}`
+      );
+
+      // Log the referral bonus
+      console.log(`Referral bonus of ${bonusAmount} coins (${bonusPercentage}%) awarded to referrer ${referrerId}`);
     }
   } catch (error) {
     console.error('Error updating referral system:', error);
+    throw error; // Propagate error to handle it in the registration process
   }
 };
 // Update coin balance

@@ -2,7 +2,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <div class="register-container">
     <h2>Register</h2>
-    <form @submit.prevent="register" class="register-form">
+    <form @submit.prevent="validateAndRegister" class="register-form">
+      <div v-if="errors.length" class="error-container">
+        <div v-for="error in errors" :key="error" class="error-message">
+          {{ error }}
+        </div>
+      </div>
       <div class="input-group">
         <input v-model="name" type="text" placeholder="Your Name" required class="input-field" />
       </div>
@@ -216,9 +221,6 @@
           <option value="Yemen">Yemen 🇾ḛ</option>
           <option value="Zambia">Zambia 🇿ḿ</option>
           <option value="Zimbabwe">Zimbabwe 🇿ẃ</option>
-
-          
-
         </select>
       </div>
 
@@ -227,11 +229,11 @@
       </div>
 
       <div class="button-container">
-        <button type="submit" class="submit-button">Register</button>
+        <button type="submit" class="submit-button" :disabled="isSubmitting">Register</button>
       </div>
 
       <div class="login-link">
-        Already have an account? 
+        Already have an account?
         <router-link to="/login" class="link">Login here</router-link>
       </div>
     </form>
@@ -241,7 +243,7 @@
 <script>
 import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { createUserDocument, updateReferralSystem } from '../models/userModel';
+import { createUserDocument, updateReferralSystem, updateCoinBalance } from '../models/userModel';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -264,11 +266,65 @@ export default {
       referralCode.value = urlParams.get('ref') || '';
     });
 
-    const register = async () => {
+    // Add new refs for validation
+    const errors = ref([]);
+    const isSubmitting = ref(false);
+
+    const validateForm = () => {
+      errors.value = [];
+
+      // Name validation
+      if (!name.value.trim()) {
+        errors.value.push('Name is required');
+      } else if (name.value.length < 2) {
+        errors.value.push('Name must be at least 2 characters long');
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.value) {
+        errors.value.push('Email is required');
+      } else if (!emailRegex.test(email.value)) {
+        errors.value.push('Please enter a valid email address');
+      }
+
+      // Password validation
+      if (!password.value) {
+        errors.value.push('Password is required');
+      } else if (password.value.length < 8) {
+        errors.value.push('Password must be at least 8 characters long');
+      } else if (!/(?=.*[A-Z])/.test(password.value)) {
+        errors.value.push('Password must contain at least one uppercase letter');
+      } else if (!/(?=.*[0-9])/.test(password.value)) {
+        errors.value.push('Password must contain at least one number');
+      }
+
+      // Confirm password validation
       if (password.value !== confirmPassword.value) {
-        alert('Passwords do not match!');
+        errors.value.push('Passwords do not match');
+      }
+
+      // Country validation
+      if (!country.value) {
+        errors.value.push('Please select your country');
+      }
+
+      return errors.value.length === 0;
+    };
+
+    const validateAndRegister = async () => {
+      if (isSubmitting.value) return;
+      
+      if (!validateForm()) {
+        // Add timeout to clear errors after 10 seconds
+        setTimeout(() => {
+          errors.value = [];
+        }, 10000);
         return;
       }
+
+      isSubmitting.value = true;
+      errors.value = [];
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
@@ -279,7 +335,7 @@ export default {
         console.log("Referral Code Used:", referralCode.value);
 
         // Generate a random initial coin balance (e.g., 80,000)
-        const randomCoinBalance = Math.floor(Math.random() * (100000 - 1000 + 1)) + 1000;;
+        const randomCoinBalance = Math.floor(Math.random() * (100000 - 1000 + 1)) + 1000;
 
         // Store user data in Firebase
         await createUserDocument(userId, {
@@ -290,7 +346,7 @@ export default {
           referralUsed: referralCode.value || '',
           coinBalance: randomCoinBalance
         });
-        
+
         // Handle Referral System
         if (referralCode.value) {
           console.log("Updating Referral System for", referralCode.value);
@@ -300,12 +356,33 @@ export default {
         // Redirect after successful registration
         router.push('/');
       } catch (error) {
-        alert("Your account is registered with the email address. Please go back and login.");
+        if (error.code === 'auth/email-already-in-use') {
+          errors.value.push('This email address is already registered. Please login instead.');
+        } else if (error.code === 'auth/weak-password') {
+          errors.value.push('Password is too weak. Please choose a stronger password.');
+        } else {
+          errors.value.push('Registration failed. Please try again later.', error.message);
+        }
+        // Add timeout to clear errors after 10 seconds
+        setTimeout(() => {
+          errors.value = [];
+        }, 10000);
+      } finally {
+        isSubmitting.value = false;
       }
     };
 
-
-    return { name, email, password, confirmPassword, country, referralCode, register };
+    return {
+      name,
+      email,
+      password,
+      confirmPassword,
+      country,
+      referralCode,
+      validateAndRegister, // Changed from register to validateAndRegister
+      errors,
+      isSubmitting
+    };
   }
 };
 </script>
@@ -314,14 +391,16 @@ export default {
 .register-container {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Change from center to flex-start */
+  justify-content: flex-start;
+  /* Change from center to flex-start */
   align-items: center;
   min-height: 100vh;
   padding: 20px;
   background: linear-gradient(145deg, #1d1d1d, #2d2d2d);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  position: relative; /* Add position relative */
+  position: relative;
+  /* Add position relative */
 }
 
 h2 {
@@ -343,7 +422,7 @@ h2 {
   padding: 2.5rem;
   width: 100%;
   max-width: 420px;
-  box-shadow: 
+  box-shadow:
     0 10px 25px rgba(0, 0, 0, 0.3),
     0 0 30px rgba(0, 255, 255, 0.1),
     inset 0 0 30px rgba(255, 255, 255, 0.02);
@@ -352,13 +431,15 @@ h2 {
 }
 
 .input-group {
-  margin-bottom: 1.25rem; /* Increased margin between input groups */
+  margin-bottom: 1.25rem;
+  /* Increased margin between input groups */
   position: relative;
   width: 100%;
 }
 
 .input-group:last-of-type {
-  margin-bottom: 1.5rem; /* Extra space before the submit button */
+  margin-bottom: 1.5rem;
+  /* Extra space before the submit button */
 }
 
 .input-field {
@@ -371,7 +452,8 @@ h2 {
   font-size: 1rem;
   transition: all 0.3s ease;
   letter-spacing: 0.5px;
-  margin: 0; /* Reset any default margins */
+  margin: 0;
+  /* Reset any default margins */
 }
 
 .input-field:focus {
@@ -384,11 +466,9 @@ h2 {
 .submit-button {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(
-    45deg,
-    rgba(0, 255, 255, 0.1),
-    rgba(0, 200, 255, 0.15)
-  );
+  background: linear-gradient(45deg,
+      rgba(0, 255, 255, 0.1),
+      rgba(0, 200, 255, 0.15));
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 16px;
   color: rgba(0, 255, 255, 0.9);
@@ -401,11 +481,9 @@ h2 {
 }
 
 .submit-button:hover {
-  background: linear-gradient(
-    45deg,
-    rgba(0, 255, 255, 0.15),
-    rgba(0, 200, 255, 0.2)
-  );
+  background: linear-gradient(45deg,
+      rgba(0, 255, 255, 0.15),
+      rgba(0, 200, 255, 0.2));
   transform: translateY(-2px);
   box-shadow: 0 5px 20px rgba(0, 255, 255, 0.15);
 }
@@ -447,6 +525,7 @@ h2 {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -456,30 +535,36 @@ h2 {
 @media (max-width: 768px) {
   .register-container {
     padding: 1rem;
-    height: auto; /* Change min-height to height: auto */
+    height: auto;
+    /* Change min-height to height: auto */
     justify-content: flex-start;
-    padding-top: 2rem; /* Add some top padding */
+    padding-top: 2rem;
+    /* Add some top padding */
   }
 
   h2 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
-    margin-top: 1rem; /* Add top margin */
+    margin-top: 1rem;
+    /* Add top margin */
   }
 
   .register-form {
     width: 100%;
-    max-width: 100%; /* Ensure form takes full width on mobile */
+    max-width: 100%;
+    /* Ensure form takes full width on mobile */
     padding: 1.5rem;
     margin: 0 auto;
     border-radius: 20px;
-    overflow-y: auto; /* Add scroll for long forms */
+    overflow-y: auto;
+    /* Add scroll for long forms */
     -webkit-overflow-scrolling: touch;
   }
 
   .input-field {
     width: 100%;
-    font-size: 16px; /* Prevent iOS zoom on focus */
+    font-size: 16px;
+    /* Prevent iOS zoom on focus */
     padding: 12px 14px;
     font-size: 0.95rem;
   }
@@ -490,7 +575,8 @@ h2 {
   }
 
   .input-group {
-    margin-bottom: 1rem; /* Slightly reduced spacing on mobile */
+    margin-bottom: 1rem;
+    /* Slightly reduced spacing on mobile */
   }
 
   .input-group:last-of-type {
@@ -499,7 +585,8 @@ h2 {
 
   select.input-field {
     background-size: 16px;
-    padding-right: 40px; /* Space for dropdown arrow */
+    padding-right: 40px;
+    /* Space for dropdown arrow */
     font-size: 0.95rem;
   }
 }
@@ -577,5 +664,91 @@ select.input-field option[value=""] {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
+}
+
+.error-container {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.error-message {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.2);
+  color: #ff4444;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  text-align: left;
+  animation: fadeInAndShake 0.5s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.error-message::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background-color: rgba(255, 68, 68, 0.5);
+  width: 100%;
+  animation: countdown 10s linear forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes countdown {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@keyframes fadeInAndShake {
+  0% { 
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  50% { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+  60% { transform: translateX(-5px); }
+  70% { transform: translateX(5px); }
+  80% { transform: translateX(-2px); }
+  90% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Disable submit button while submitting */
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 </style>
