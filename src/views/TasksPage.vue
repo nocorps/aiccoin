@@ -2,70 +2,105 @@
   <div class="task-container">
     <Toast :toasts="toasts" />
     
-    <!-- Update the note section structure -->
-    
-    
-    <h2>📌 Available Tasks</h2>
-    <div class="task-list">
-      <template v-if="availableTasks.length">
-        <li v-for="task in availableTasks" :key="task.task_id" class="task-item">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button :class="{ active: selectedTab === 'tasks' }" @click="selectedTab = 'tasks'">Tasks</button>
+      <button :class="{ active: selectedTab === 'collaborations' }" @click="selectedTab = 'collaborations'">Collaborations</button>
+    </div>
+
+    <!-- Tasks Tab Content -->
+    <div v-if="selectedTab === 'tasks'">
+      <h2>📌 Available Tasks</h2>
+      <div class="task-list">
+        <template v-if="availableTasks.length">
+          <li v-for="task in availableTasks" :key="task.task_id" class="task-item">
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <p>🎁 Reward: <strong>{{ task.award }} coins</strong></p>
+            <button v-if="!task.inProgress && !task.completed" @click="startTask(task)">🚀 Start</button>
+            <button v-else-if="task.inProgress" @click="openVerifyModal(task)">✅ Verify</button>
+            <span v-else class="completed-text">✔️ Completed</span>
+          </li>
+        </template>
+        <div v-else class="no-tasks">
+          <div class="loading-icon">
+            <i class="mdi mdi-clock-outline"></i>
+          </div>
+          <h3>New Tasks Coming Soon!</h3>
+          <p>Stay tuned for exciting opportunities to earn more coins.</p>
+          <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="note-card">
+        <h2>📝 Instructions</h2>
+        <div class="note-steps">
+          <div class="step-item">
+            <span class="step-number">1</span>
+            <p>Read the task description</p>
+          </div>
+          <div class="step-item">
+            <span class="step-number">2</span>
+            <p>Start the task</p>
+          </div>
+          <div class="step-item">
+            <span class="step-number">3</span>
+            <p>Finish the task that mentioned in the task description</p>
+          </div>
+          <div class="step-item">
+            <span class="step-number">4</span>
+            <p>Collect your Secret code from there</p>
+          </div>
+          <div class="step-item">
+            <span class="step-number">5</span>
+            <p>Click the verify in the task and enter your Secret code and verify</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🏆 Completed Tasks</h2>
+      <ul class="task-list">
+        <li v-for="task in completedTasks" :key="task.task_id" class="task-item completed">
           <h3>{{ task.title }}</h3>
           <p>{{ task.description }}</p>
           <p>🎁 Reward: <strong>{{ task.award }} coins</strong></p>
-          <button v-if="!task.inProgress && !task.completed" @click="startTask(task)">🚀 Start</button>
-          <button v-else-if="task.inProgress" @click="openVerifyModal(task)">✅ Verify</button>
-          <span v-else class="completed-text">✔️ Completed</span>
+          <span class="completed-text">✔️ Completed</span>
         </li>
-      </template>
-      <div v-else class="no-tasks">
-        <div class="loading-icon">
-          <i class="mdi mdi-clock-outline"></i>
-        </div>
-        <h3>New Tasks Coming Soon!</h3>
-        <p>Stay tuned for exciting opportunities to earn more coins.</p>
-        <div class="loading-dots">
-          <span></span>
-          <span></span>
-          <span></span>
+      </ul>
+    </div>
+
+    <!-- Collaborations Tab Content -->
+    <div v-if="selectedTab === 'collaborations'">
+      <h2>🤝 Collaboration Tasks</h2>
+      <div class="task-list">
+        <template v-if="availableCollaborationTasks.length">
+          <li v-for="task in availableCollaborationTasks" :key="task.task_id" class="task-item">
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description }}</p>
+            <p>🎁 Reward: <strong>{{ task.award }} coins</strong></p>
+            <button v-if="!task.inProgress && !task.completed" @click="startTask(task)">🚀 Start</button>
+            <button v-else-if="task.inProgress" @click="openVerifyModal(task)">✅ Verify</button>
+            <span v-else class="completed-text">✔️ Completed</span>
+          </li>
+        </template>
+        <div v-else class="no-tasks">
+          <div class="loading-icon">
+            <i class="mdi mdi-clock-outline"></i>
+          </div>
+          <h3>New Collaboration Tasks Coming Soon!</h3>
+          <p>Stay tuned for exciting opportunities to earn more coins.</p>
+          <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="note-card">
-      <h2>📝 Instructions</h2>
-      <div class="note-steps">
-        <div class="step-item">
-          <span class="step-number">1</span>
-          <p>Read the task description</p>
-        </div>
-        <div class="step-item">
-          <span class="step-number">2</span>
-          <p>Start the task</p>
-        </div>
-        <div class="step-item">
-          <span class="step-number">3</span>
-          <p>Finish the task that mentioned in the task description</p>
-        </div>
-        <div class="step-item">
-          <span class="step-number">4</span>
-          <p>Collect your Secret code from there</p>
-        </div>
-        <div class="step-item">
-          <span class="step-number">5</span>
-          <p>Click the verify in the task and enter your Secret code and verify</p>
-        </div>
-      </div>
-    </div>
-
-    <h2>🏆 Completed Tasks</h2>
-    <ul class="task-list">
-      <li v-for="task in completedTasks" :key="task.task_id" class="task-item completed">
-        <h3>{{ task.title }}</h3>
-        <p>{{ task.description }}</p>
-        <p>🎁 Reward: <strong>{{ task.award }} coins</strong></p>
-        <span class="completed-text">✔️ Completed</span>
-      </li>
-    </ul>
 
     <!-- Modal for Secret Code Verification -->
     <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
@@ -85,7 +120,6 @@
 import { db, auth } from "@/firebase";
 import { collection, getDocs, updateDoc, doc, arrayUnion, increment, getDoc } from "firebase/firestore";
 import { updateCoinBalance } from '../models/userModel';
-// import Toast from '../components/Toast.vue';
 import Toast from '../components/TostAlert.vue';
 
 export default {
@@ -95,16 +129,19 @@ export default {
   data() {
     return {
       tasks: [],
+      collaborationTasks: [],
       userCompletedTasks: [],
-      isModalOpen: false, // Controls the visibility of the modal
-      enteredSecret: '',  // Holds the entered secret code
-      currentTask: null,  // The task that is being verified
-      toasts: [], // Add this for toast messages
-      toastCounter: 0
+      isModalOpen: false,
+      enteredSecret: '',
+      currentTask: null,
+      toasts: [],
+      toastCounter: 0,
+      selectedTab: 'tasks' // Add this for tab selection
     };
   },
   async created() {
     await this.fetchTasks();
+    await this.fetchCollaborationTasks();
     await this.fetchUserData();
   },
   computed: {
@@ -114,11 +151,23 @@ export default {
     completedTasks() {
       return this.tasks.filter(task => this.userCompletedTasks.includes(task.task_id));
     },
+    availableCollaborationTasks() {
+      return this.collaborationTasks.filter(task => !this.userCompletedTasks.includes(task.task_id));
+    },
   },
   methods: {
     async fetchTasks() {
       const querySnapshot = await getDocs(collection(db, "tasks"));
       this.tasks = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+        inProgress: false,
+        completed: false,
+      }));
+    },
+    async fetchCollaborationTasks() {
+      const querySnapshot = await getDocs(collection(db, "collaborationTasks"));
+      this.collaborationTasks = querySnapshot.docs.map(doc => ({
         ...doc.data(),
         id: doc.id,
         inProgress: false,
@@ -140,31 +189,24 @@ export default {
       window.open(task.url_redirect, "_blank");
     },
     openVerifyModal(task) {
-      this.currentTask = task;  // Set the current task to be verified
-      this.isModalOpen = true;   // Open the modal
+      this.currentTask = task;
+      this.isModalOpen = true;
     },
     closeModal() {
       this.isModalOpen = false;
-      this.enteredSecret = ''; // Clear the entered secret
+      this.enteredSecret = '';
     },
     async verifyTaskWithModal() {
       if (this.enteredSecret === this.currentTask.secret) {
         try {
-          // Update the UI state
           this.currentTask.completed = true;
           this.currentTask.inProgress = false;
-
-          // Update the backend with task completion data
           await this.updateUserTaskData(this.currentTask);
-
-          // Update coin balance
           await updateCoinBalance(
             auth.currentUser.uid, 
             this.currentTask.award,
             `Completed task: ${this.currentTask.title}`
           );
-
-          // Close modal and show success message
           this.closeModal();
           this.showToast('Task verified! Reward added. 🎉');
         } catch (error) {
@@ -187,7 +229,6 @@ export default {
         this.userCompletedTasks.push(task.task_id);
       }
     },
-    // Add toast methods
     showToast(message, type = 'success') {
       const id = this.toastCounter++;
       this.toasts.push({ id, message, type });
@@ -207,6 +248,35 @@ export default {
   min-height: 100vh;
   background: linear-gradient(145deg, #1d1d1d, #2d2d2d);
   padding-bottom: 100px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.tabs button {
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  padding: 0.75rem 1.5rem;
+  color: rgba(0, 255, 255, 0.7);
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  margin: 0 0.5rem;
+}
+
+.tabs button.active {
+  background: rgba(0, 255, 255, 0.2);
+  color: rgba(0, 255, 255, 0.9);
+}
+
+.tabs button:hover {
+  background: rgba(0, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
 }
 
 h2 {
