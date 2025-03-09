@@ -110,4 +110,17 @@ const updateTasksCompleted = async (userId) => {
     console.error("❌ Error updating tasks completed: ", error);
   }
 };
+export const updateTaskCompletion = async (userId, taskId, coins) => {
+  const userDocRef = doc(db, 'users', userId);
+  try {
+    await updateDoc(userDocRef, {
+      coinBalance: increment(coins),
+      tasksCompleted: increment(1),
+      completedTasks: arrayUnion(taskId)
+    });
+  } catch (error) {
+    console.error("Error updating task completion:", error);
+    throw error;
+  }
+};
 export { createUserDocument, updateReferralSystem, updateCoinBalance, updateAdsWatched };

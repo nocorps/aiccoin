@@ -38,9 +38,12 @@ export default {
         const router = useRouter();
         const gameStats = ref({
             coinFlip: { wins: 0, losses: 0, earnings: 0 },
-            numberGuess: { wins: 0, losses: 0, earnings: 0 },
+            
             scratchCard: { wins: 0, losses: 0, earnings: 0 },
-            spinWheel: { wins: 0, losses: 0, earnings: 0 }
+            numberGuess: { wins: 0, losses: 0, earnings: 0 },
+            spinWheel: { wins: 0, losses: 0, earnings: 0 },
+            lotteryGuess: { wins: 0, losses: 0, earnings: 0 },
+
         });
 
         const loadGameStats = async () => {
@@ -69,7 +72,7 @@ export default {
                     id: 1,
                     name: 'Coin Flip',
                     description: 'Double your coins with this classic game of chance',
-                    icon: 'mdi mdi-coin',
+                    icon: 'mdi mdi-card',
                     route: '/games/coin-flip',
                     statsKey: 'coinFlip'
                 },
@@ -81,22 +84,38 @@ export default {
                 //     route: '/games/number-guess',
                 //     statsKey: 'numberGuess'
                 // },
+                {
+                    id: 2,
+                    name: 'Scratch Card',
+                    description: 'Scratch and win instant coins',
+                    icon: 'mdi mdi-card',
+                    route: '/games/scratch-card',
+                    statsKey: 'scratchCard'
+                },
                 // {
-                //     id: 3,
-                //     name: 'Scratch Card',
-                //     description: 'Scratch and win instant coins',
-                //     icon: 'mdi mdi-card',
-                //     route: '/games/scratch-card',
-                //     statsKey: 'scratchCard'
-                // },
-                // {
-                //     id: 2,
+                //     id: 4,
                 //     name: 'Spin Wheel',
                 //     description: 'Spin the wheel for a chance to win big',
                 //     icon: 'mdi mdi-wheel-fast',
                 //     route: '/games/spin-wheel',
                 //     statsKey: 'spinWheel'
-                // }
+                // },
+                {
+                    id: 3,
+                    name: 'Number Guess',
+                    description: 'Guess the correct number to win coins',
+                    icon: 'mdi mdi-card',
+                    route: '/games/number-guess',
+                    statsKey: 'numberGuess'
+                },
+                // {
+                //     id: 6,
+                //     name: 'Lottery Guess',
+                //     description: 'Guess the lucky number to win the jackpot',
+                //     icon: 'mdi mdi-card',
+                //     route: '/games/lottery-guess',
+                //     statsKey: 'lotteryGuess'
+                // },
             ]
         }
     },

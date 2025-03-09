@@ -260,10 +260,30 @@ export default {
     // Generate Unique Referral Code
     const generateReferralCode = () => 'REF' + Math.random().toString(36).substring(2, 12).toUpperCase();
 
-    // Auto-fill referral code from URL
+    // Auto-fill referral code from URL or Telegram WebApp
     onMounted(() => {
+      // Check URL parameters first
       const urlParams = new URLSearchParams(window.location.search);
-      referralCode.value = urlParams.get('ref') || '';
+      const urlRef = urlParams.get('ref');
+
+      // Check Telegram WebApp data
+      const tgWebApp = window.Telegram?.WebApp;
+      if (tgWebApp) {
+        try {
+          const startParam = tgWebApp.initDataUnsafe?.start_param;
+          if (startParam) {
+            referralCode.value = startParam;
+          } else if (urlRef) {
+            referralCode.value = urlRef;
+          }
+        } catch (error) {
+          console.error('Error getting Telegram start parameter:', error);
+          if (urlRef) referralCode.value = urlRef;
+        }
+      } else {
+        // Fallback to URL parameter if Telegram WebApp is not available
+        if (urlRef) referralCode.value = urlRef;
+      }
     });
 
     // Add new refs for validation
