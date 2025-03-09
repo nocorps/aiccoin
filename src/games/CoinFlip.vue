@@ -53,8 +53,8 @@
             <button 
                 class="flip-button" 
                 @click="flipCoin" 
-                :disabled="!canFlip || isFlipping">
-                Flip Coin ({{ selectedMultiplier.label }})
+                :disabled="!canFlip || isFlipping || cooldownActive">
+                {{ cooldownActive ? `Wait ${cooldownTime}s` : `Flip Coin (${selectedMultiplier.label})` }}
             </button>
         </div>
 
@@ -94,11 +94,18 @@ export default {
             { value: 10, label: 'x10', chance: 5 }
         ];
 
+        // Add new refs for cooldown
+        const cooldownActive = ref(false);
+        const cooldownTime = ref(0);
+        const COOLDOWN_DURATION = 20; // 20 seconds cooldown
+
+        // Modify canFlip computed
         const canFlip = computed(() => {
             return selectedSide.value && 
                    betAmount.value > 0 && 
                    betAmount.value <= userBalance.value &&
-                   selectedMultiplier.value;
+                   selectedMultiplier.value &&
+                   !cooldownActive.value;
         });
 
         const loadUserBalance = async () => {
@@ -143,8 +150,23 @@ export default {
             await loadUserBalance();
         };
 
+        // Add cooldown timer function
+        const startCooldown = () => {
+            cooldownActive.value = true;
+            cooldownTime.value = COOLDOWN_DURATION;
+            
+            const timer = setInterval(() => {
+                cooldownTime.value--;
+                if (cooldownTime.value <= 0) {
+                    cooldownActive.value = false;
+                    clearInterval(timer);
+                }
+            }, 1000);
+        };
+
+        // Modify flipCoin function
         const flipCoin = async () => {
-            if (!canFlip.value) return;
+            if (!canFlip.value || cooldownActive.value) return;
 
             const userId = auth.currentUser?.uid;
             if (!userId) return;
@@ -181,6 +203,7 @@ export default {
                     await handleGameOutcome(willWin, betAmount.value);
                     isFlipping.value = false;
                     selectedSide.value = '';
+                    startCooldown(); // Start cooldown here
                     
                     // Reset coin rotation after animation
                     setTimeout(() => {
@@ -232,7 +255,9 @@ export default {
             flipCoin,
             selectedMultiplier,
             multipliers,
-            selectMultiplier
+            selectMultiplier,
+            cooldownActive,
+            cooldownTime
         };
     }
 }
@@ -345,6 +370,14 @@ button.active {
     color: #000;
     font-weight: bold;
     padding: 15px 30px;
+    min-width: 200px;
+    transition: all 0.3s ease;
+}
+
+.flip-button:disabled {
+    background: linear-gradient(45deg, #666, #444);
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .result {

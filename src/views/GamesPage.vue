@@ -89,14 +89,14 @@ export default {
                 //     route: '/games/scratch-card',
                 //     statsKey: 'scratchCard'
                 // },
-                {
-                    id: 2,
-                    name: 'Spin Wheel',
-                    description: 'Spin the wheel for a chance to win big',
-                    icon: 'mdi mdi-wheel-fast',
-                    route: '/games/spin-wheel',
-                    statsKey: 'spinWheel'
-                }
+                // {
+                //     id: 2,
+                //     name: 'Spin Wheel',
+                //     description: 'Spin the wheel for a chance to win big',
+                //     icon: 'mdi mdi-wheel-fast',
+                //     route: '/games/spin-wheel',
+                //     statsKey: 'spinWheel'
+                // }
             ]
         }
     },

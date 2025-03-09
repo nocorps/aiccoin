@@ -12,7 +12,7 @@ import { auth } from '../firebase';
 import CoinFlip from '../games/CoinFlip.vue';
 // import NumberGuess from '../games/NumberGuess.vue';
 // import ScratchCard from '../games/ScratchCard.vue';
-import SpinWheel from '../games/SpinWheel.vue';
+// import SpinWheel from '../games/SpinWheel.vue';
 
 // Define routes
 const routes = [
@@ -43,12 +43,12 @@ const routes = [
   //   component: ScratchCard,
   //   meta: { requiresAuth: true }
   // },
-  {
-    path: '/games/spin-wheel',
-    name: 'SpinWheel',
-    component: SpinWheel,
-    meta: { requiresAuth: true }
-  },
+  // {
+  //   path: '/games/spin-wheel',
+  //   name: 'SpinWheel',
+  //   component: SpinWheel,
+  //   meta: { requiresAuth: true }
+  // },
 ];
 
 // Create router
