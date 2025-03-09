@@ -10,6 +10,11 @@
             <span>Ranking</span>
         </router-link>
         
+        <router-link to="/games" class="nav-item">
+            <i class="mdi mdi-gamepad-variant"></i>
+            <span>Games</span>
+        </router-link>
+        
         <router-link to="/tasks" class="nav-item">
             <i class="mdi mdi-clipboard-check"></i>
             <span>Tasks</span>

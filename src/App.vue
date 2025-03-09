@@ -25,4 +25,14 @@ export default {
   position: relative;
   overflow-x: hidden;
 }
+
+.content {
+  padding-bottom: 100px; /* Add padding for the bottom nav */
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding-bottom: 120px; /* Increase padding for mobile screens */
+  }
+}
 </style>
