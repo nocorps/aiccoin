@@ -20,7 +20,7 @@
           <p><strong>Name:</strong> {{ refUser.name }}</p>
           <p><strong>Country:</strong> {{ refUser.country }}</p>
           <!-- <p><strong>Email:</strong> {{ refUser.email }}</p> -->
-          <p class="coins"><strong>Coins:</strong> {{ refUser.coinBalance }} 🪙</p>
+          <p class="coins"><strong>Coins:</strong> {{ refUser.coinBalance }}</p>
         </div>
       </li>
     </ul>

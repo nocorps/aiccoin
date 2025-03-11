@@ -108,8 +108,20 @@
         <h3>Enter the Secret Code</h3>
         <input v-model="enteredSecret" type="text" placeholder="Secret Code" class="modal-input" />
         <div class="modal-actions">
-          <button @click="verifyTaskWithModal">Verify</button>
-          <button @click="closeModal">Cancel</button>
+          <button 
+            @click="verifyTaskWithModal"
+            :disabled="isVerifying"
+            class="verify-button"
+          >
+            <span v-if="isVerifying" class="loading-spinner"></span>
+            <span v-else>Verify</span>
+          </button>
+          <button 
+            @click="closeModal"
+            :disabled="isVerifying"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>
@@ -136,7 +148,8 @@ export default {
       currentTask: null,
       toasts: [],
       toastCounter: 0,
-      selectedTab: 'tasks' // Add this for tab selection
+      selectedTab: 'tasks', // Add this for tab selection
+      isVerifying: false,
     };
   },
   async created() {
@@ -197,24 +210,32 @@ export default {
       this.enteredSecret = '';
     },
     async verifyTaskWithModal() {
-      if (this.enteredSecret === this.currentTask.secret) {
-        try {
+      if (this.isVerifying) return; // Prevent multiple clicks
+      
+      this.isVerifying = true;
+      
+      try {
+        if (this.enteredSecret === this.currentTask.secret) {
           this.currentTask.completed = true;
           this.currentTask.inProgress = false;
+          
           await this.updateUserTaskData(this.currentTask);
           await updateCoinBalance(
             auth.currentUser.uid, 
             this.currentTask.award,
             `Completed task: ${this.currentTask.title}`
           );
+          
           this.closeModal();
           this.showToast('Task verified! Reward added. 🎉');
-        } catch (error) {
-          console.error("Error updating task status:", error);
-          this.showToast('Error updating task status. Please try again.', 'error');
+        } else {
+          this.showToast('Incorrect secret code. Please try again. ❌', 'error');
         }
-      } else {
-        this.showToast('Incorrect secret code. Please try again. ❌', 'error');
+      } catch (error) {
+        console.error("Error updating task status:", error);
+        this.showToast('Error updating task status. Please try again.', 'error');
+      } finally {
+        this.isVerifying = false;
       }
     },
     async updateUserTaskData(task) {
@@ -347,6 +368,12 @@ button:hover {
   background: rgba(0, 255, 255, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 .completed-text {
@@ -578,5 +605,23 @@ button:hover {
   .step-item p {
     font-size: 0.9rem;
   }
+}
+
+.verify-button {
+  position: relative;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: rgba(0, 255, 255, 0.9);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>

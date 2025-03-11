@@ -100,7 +100,8 @@
 <script>
 import { ref, computed, onMounted } from 'vue'
 import { db } from '../../firebase'
-import { collection, getDocs, addDoc, query, where } from 'firebase/firestore'
+import { collection, getDocs, addDoc, query, where, updateDoc, doc } from 'firebase/firestore'
+import { mailService } from '../../utils/mailService';
 
 export default {
   name: 'EmailToUsers',
@@ -212,15 +213,15 @@ export default {
     }
 
     const sendEmails = async () => {
-      if (!canSend.value) return
-      isSending.value = true
+      if (!canSend.value) return;
+      isSending.value = true;
 
       try {
         const targetUsers = users.value.filter(user => {
-          if (targetType.value === 'all') return true
-          if (targetType.value === 'active') return user.status === 'active'
-          return (user.coinBalance || 0) >= minCoins.value
-        })
+          if (targetType.value === 'all') return true;
+          if (targetType.value === 'active') return user.status === 'active';
+          return (user.coinBalance || 0) >= minCoins.value;
+        });
 
         // Create email campaign record
         const campaign = await addDoc(collection(db, 'emailCampaigns'), {
@@ -230,30 +231,46 @@ export default {
           minCoins: targetType.value === 'coins' ? minCoins.value : null,
           totalRecipients: targetUsers.length,
           createdAt: new Date()
-        })
+        });
 
-        // Queue emails for each user
-        await Promise.all(targetUsers.map(user => 
-          addDoc(collection(db, 'emailQueue'), {
+        // Prepare email batch
+        const emailBatch = targetUsers.map(user => ({
+          to: user.email,
+          subject: emailContent.value.subject,
+          html: emailContent.value.body
+            .replace(/{userName}/g, user.displayName || 'User')
+            .replace(/{coinBalance}/g, user.coinBalance || 0)
+            .replace(/{referralCode}/g, user.referralCode || 'N/A')
+        }));
+
+        // Send emails in batches
+        const results = await mailService.sendBulkMail(emailBatch);
+
+        // Update campaign status
+        const successCount = results.filter(r => r.success).length;
+        await updateDoc(doc(db, 'emailCampaigns', campaign.id), {
+          status: 'completed',
+          successCount,
+          failureCount: results.length - successCount,
+          completedAt: new Date()
+        });
+
+        // Store detailed results
+        await Promise.all(results.map(result => 
+          addDoc(collection(db, 'emailResults'), {
             campaignId: campaign.id,
-            userId: user.id,
-            subject: emailContent.value.subject,
-            body: emailContent.value.body
-              .replace(/{userName}/g, user.displayName || 'User')
-              .replace(/{coinBalance}/g, user.coinBalance || 0)
-              .replace(/{referralCode}/g, user.referralCode || 'N/A'),
-            status: 'pending',
-            createdAt: new Date()
+            ...result,
+            timestamp: new Date()
           })
-        ))
+        ));
 
-        alert(`Campaign queued for ${targetUsers.length} users!`)
-        emailContent.value = { subject: '', body: '' }
+        alert(`Campaign sent! Success: ${successCount}, Failed: ${results.length - successCount}`);
+        emailContent.value = { subject: '', body: '' };
       } catch (error) {
-        console.error('Error sending campaign:', error)
-        alert('Failed to send campaign. Please try again.')
+        console.error('Error sending campaign:', error);
+        alert('Failed to send campaign. Please try again.');
       } finally {
-        isSending.value = false
+        isSending.value = false;
       }
     }
 

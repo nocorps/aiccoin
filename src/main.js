@@ -1,5 +1,23 @@
+// Add this code at the top before imports
+if (window.location.hostname === 'aiccoin.nocorps.org') {
+  const currentUrl = new URL(window.location.href);
+  const searchParams = currentUrl.searchParams;
+  const ref = searchParams.get('ref'); // Get referral code if exists
+  
+  // Construct new URL with referral code if present
+  let redirectUrl = 'https://aiccoin.site';
+  if (ref) {
+    redirectUrl += `?ref=${ref}`;
+  }
+  
+  // Add any other path components from original URL
+  if (currentUrl.pathname !== '/') {
+    redirectUrl += currentUrl.pathname;
+  }
 
-// src/main.js
+  window.location.href = redirectUrl;
+}
+
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';

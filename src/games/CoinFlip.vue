@@ -1,3 +1,10 @@
+<!-- 
+ Update  
+-->
+
+
+
+
 <template>
     <div class="coin-flip-container">
         <div class="balance-display">
@@ -31,7 +38,7 @@
                     :class="{ active: selectedMultiplier.value === multiplier.value }"
                     :disabled="isFlipping">
                     {{ multiplier.label }}
-                    <!-- <small>({{ multiplier.chance }}% chance)</small> -->
+                    <small>({{ multiplier.chance }}% chance)</small>
                 </button>
             </div>
 

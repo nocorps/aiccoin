@@ -6,13 +6,15 @@
       <button @click="fetchGlobalRanking('taskCount')">By Tasks Completed</button>
     </div>
     <p v-if="currentUserGlobalRank" class="user-rank">
-      Your rank: <span>#{{ currentUserGlobalRank.rank }}</span> | 💰 {{ currentUserGlobalRank.coinBalance }} | 📋 {{ currentUserGlobalRank.taskCount }}
+      Your rank: <span>#{{ currentUserGlobalRank.rank }}</span> | 🪙 {{ currentUserGlobalRank.coinBalance }}
+       {{ currentUserGlobalRank.taskCount }}
     </p>
     <br/>
     <ul>
       <li v-for="(user, index) in globalRankings" :key="user.uid">
         <span class="rank">{{ index + 1 }}</span>
-        <strong>{{ user.name }}</strong> - 💰 {{ user.coinBalance }} | 📋 {{ user.taskCount }}
+        <strong>{{ user.name }}</strong> - 🪙 {{ user.coinBalance }} 
+        | 📋 {{ user.taskCount }}
       </li>
     </ul>
     <br/><br/>

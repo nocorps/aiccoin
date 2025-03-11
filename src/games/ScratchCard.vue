@@ -42,9 +42,9 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { auth, db } from '../firebase';
-import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, increment, serverTimestamp, Timestamp, onSnapshot, setDoc, deleteDoc } from 'firebase/firestore';
 import { updateCoinBalance } from '../models/userModel';
 
 export default {
@@ -65,7 +65,13 @@ export default {
         // Cooldown related refs
         const cooldownActive = ref(false);
         const cooldownTime = ref(0);
-        const COOLDOWN_DURATION = 24 * 60 * 60; // 24 hours in seconds
+        const COOLDOWN_DURATION = 2 * 60 * 60; // 2 hours in seconds
+
+        const timerInterval = ref(null);
+
+        // Add new refs for Firestore cooldown
+        const cooldownDoc = ref(null);
+        const unsubscribeCooldown = ref(null);
 
         const multipliers = [
             { value: 0, chance: 40 },
@@ -82,10 +88,13 @@ export default {
         });
 
         const formatTime = (seconds) => {
+            if (!seconds) return '0h 0m 0s';
+            
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
-            const remainingSeconds = seconds % 60;
-            return `${hours}h ${minutes}m ${remainingSeconds}s`;
+            const secs = Math.floor(seconds % 60);
+            
+            return `${hours}h ${minutes}m ${secs}s`;
         };
 
         const loadUserBalance = async () => {
@@ -108,32 +117,83 @@ export default {
             });
         };
 
-        const startCooldown = () => {
-            cooldownActive.value = true;
-            cooldownTime.value = COOLDOWN_DURATION;
-            
-            const timer = setInterval(() => {
-                cooldownTime.value--;
-                if (cooldownTime.value <= 0) {
-                    cooldownActive.value = false;
-                    clearInterval(timer);
-                }
-            }, 1000);
+        const startCooldown = async () => {
+            const userId = auth.currentUser?.uid;
+            if (!userId) return;
 
-            // Store cooldown end time in localStorage
-            const cooldownEndTime = Date.now() + (COOLDOWN_DURATION * 1000);
-            localStorage.setItem('scratchCardCooldown', cooldownEndTime.toString());
+            try {
+                const cooldownRef = doc(db, 'cooldowns', `scratchCard_${userId}`);
+                const endTime = Timestamp.fromDate(new Date(Date.now() + COOLDOWN_DURATION * 1000));
+                
+                await setDoc(cooldownRef, {
+                    userId,
+                    gameType: 'scratchCard',
+                    startTime: serverTimestamp(),
+                    endTime: endTime
+                });
+
+                cooldownActive.value = true;
+                startLocalTimer(endTime.toMillis());
+            } catch (error) {
+                console.error('Error starting cooldown:', error);
+            }
         };
 
-        const checkStoredCooldown = () => {
-            const storedCooldown = localStorage.getItem('scratchCardCooldown');
-            if (storedCooldown) {
-                const remainingTime = Math.floor((parseInt(storedCooldown) - Date.now()) / 1000);
-                if (remainingTime > 0) {
-                    cooldownActive.value = true;
-                    cooldownTime.value = remainingTime;
-                    startCooldown();
+        const startLocalTimer = (endTimeMillis) => {
+            if (timerInterval.value) {
+                clearInterval(timerInterval.value);
+            }
+
+            const updateTimer = () => {
+                const now = Date.now();
+                const remaining = Math.max(0, endTimeMillis - now);
+                
+                if (remaining <= 0) {
+                    cooldownActive.value = false;
+                    cooldownTime.value = 0;
+                    clearInterval(timerInterval.value);
+                    return;
                 }
+                
+                cooldownTime.value = Math.floor(remaining / 1000);
+            };
+
+            updateTimer(); // Update immediately
+            timerInterval.value = setInterval(updateTimer, 1000);
+        };
+
+        const checkStoredCooldown = async () => {
+            const userId = auth.currentUser?.uid;
+            if (!userId) return;
+
+            try {
+                const cooldownRef = doc(db, 'cooldowns', `scratchCard_${userId}`);
+                
+                // Set up real-time listener
+                unsubscribeCooldown.value = onSnapshot(cooldownRef, (snapshot) => {
+                    if (!snapshot.exists()) {
+                        cooldownActive.value = false;
+                        cooldownTime.value = 0;
+                        return;
+                    }
+
+                    const data = snapshot.data();
+                    const endTime = data.endTime.toMillis();
+                    const now = Date.now();
+                    const remaining = endTime - now;
+
+                    if (remaining <= 0) {
+                        cooldownActive.value = false;
+                        cooldownTime.value = 0;
+                        // Clean up expired cooldown
+                        deleteDoc(cooldownRef).catch(console.error);
+                    } else {
+                        cooldownActive.value = true;
+                        startLocalTimer(endTime);
+                    }
+                });
+            } catch (error) {
+                console.error('Error checking cooldown:', error);
             }
         };
 
@@ -264,6 +324,15 @@ export default {
             checkStoredCooldown();
         });
 
+        onUnmounted(() => {
+            if (timerInterval.value) {
+                clearInterval(timerInterval.value);
+            }
+            if (unsubscribeCooldown.value) {
+                unsubscribeCooldown.value();
+            }
+        });
+
         return {
             userBalance,
             betAmount,
@@ -283,7 +352,9 @@ export default {
             startGame,
             startScratching,
             scratch,
-            stopScratching
+            stopScratching,
+            checkStoredCooldown,
+            startCooldown
         };
     }
 }

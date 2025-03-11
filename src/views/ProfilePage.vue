@@ -6,8 +6,17 @@
         <p><strong>Name:</strong> {{ user.name }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
         <p><strong>Country:</strong> {{ user.country }}</p>
-        <p><strong>Coins:</strong> {{ user.coinBalance }} 🪙</p>
+        <!-- <p><strong>Coins:</strong> {{ user.coinBalance }} 🪙</p> -->
+        <p><strong>Coins:</strong> {{ user.coinBalance }} </p>
         <p><strong>Referral Code:</strong> {{ user.referralCode }}</p>
+        <p class="wallet-section">
+          <strong>Wallet:</strong>
+          <button class="connect-wallet-btn" disabled>
+            <i class="fas fa-wallet"></i> 
+            Connect Wallet 
+            <span class="coming-soon">Coming Soon</span>
+          </button>
+        </p>
         <button @click="logout" class="logout-btn">
           <i class="fas fa-sign-out-alt"></i> Logout
         </button>
@@ -145,6 +154,41 @@ h2 {
   box-shadow: 0 5px 15px rgba(255, 77, 77, 0.1);
 }
 
+.wallet-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between !important;
+}
+
+.connect-wallet-btn {
+  background: rgba(0, 255, 255, 0.1);
+  color: rgba(0, 255, 255, 0.5);
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  font-size: 0.9rem;
+  cursor: not-allowed;
+  position: relative;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.connect-wallet-btn i {
+  margin-right: 0.5rem;
+}
+
+.coming-soon {
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
 @media (max-width: 768px) {
   .profile-container {
     padding: 0.75rem;
@@ -173,6 +217,22 @@ h2 {
     padding: 0.8rem;
     font-size: 1rem;
     margin-top: 1.5rem;
+  }
+
+  .wallet-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .connect-wallet-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .coming-soon {
+    top: -15px;
+    right: 5px;
   }
 }
 </style>
