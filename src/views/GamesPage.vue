@@ -43,6 +43,7 @@ export default {
             numberGuess: { wins: 0, losses: 0, earnings: 0 },
             spinWheel: { wins: 0, losses: 0, earnings: 0 },
             lotteryGuess: { wins: 0, losses: 0, earnings: 0 },
+            TilesMatch: { wins: 0, losses: 0, earnings: 0 },
 
         });
 
@@ -107,6 +108,14 @@ export default {
                     icon: 'mdi mdi-card',
                     route: '/games/number-guess',
                     statsKey: 'numberGuess'
+                },
+                {
+                    id: 4,
+                    name: 'Tiles Match',
+                    description: 'Match the tiles to win coins',
+                    icon: 'mdi mdi-card',
+                    route: '/games/win-more/aic/match-tile',
+                    statsKey: 'TilesMatch'
                 },
                 // {
                 //     id: 6,

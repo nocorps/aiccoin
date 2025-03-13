@@ -51,6 +51,37 @@
       </div>
     </div>
 
+    <!-- Ticket Collection Section -->
+    <!-- <div class="ticket-section">
+      <div class="ticket-info">
+        <div class="ticket-count">
+          <i class="fas fa-ticket-alt"></i>
+          <span>{{ tickets }} Tickets</span>
+        </div>
+        <div class="streak-info">
+          Day {{ consecutiveDays }}/7
+          <div class="streak-progress">
+            <div class="streak-bar" :style="{ width: `${(consecutiveDays / 7) * 100}%` }"></div>
+          </div>
+        </div>
+      </div>
+      
+      <button 
+        @click="claimDailyTicket" 
+        :disabled="!canClaimTicket"
+        class="claim-ticket-btn"
+        :class="{ 'ready': canClaimTicket }"
+      >
+        <template v-if="canClaimTicket">
+          Claim Daily Ticket
+          <span v-if="consecutiveDays === 6" class="bonus-tag">+10 Bonus!</span>
+        </template>
+        <template v-else>
+          Next Claim: {{ formatNextClaimTime }}
+        </template>
+      </button>
+    </div> -->
+
     <!-- Game Card -->
     <div class="game-card" @click="navigateToGame">
       <div class="game-header">
@@ -1004,6 +1035,7 @@ export default {
 .timeline-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  
   gap: 1rem;
   position: relative;
 }

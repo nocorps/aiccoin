@@ -92,13 +92,13 @@ export default {
         const selectedMultiplier = ref({
             value: 1.5,
             label: 'x1.5',
-            chance: 45
+            chance: 50
         });
         const multipliers = [
-            { value: 1.5, label: 'x1.5', chance: 45 },
+            { value: 1.5, label: 'x1.5', chance: 50 },
             { value: 2, label: 'x2', chance: 30 },
             { value: 5, label: 'x5', chance: 15 },
-            { value: 10, label: 'x10', chance: 5 }
+            { value: 20, label: 'x20', chance: 0.5 }
         ];
 
         // Add new refs for cooldown

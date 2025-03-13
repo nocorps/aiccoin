@@ -10,6 +10,9 @@ import GamesPage from '../views/GamesPage.vue'
 import CoinFlip from '../games/CoinFlip.vue'
 import ScratchCard from '../games/ScratchCard.vue'
 import NumberGuess from '../games/NumberGuess.vue'
+import DropAicGame from '../games/DropAicGame.vue'
+import BannedPage from '../views/BannedPage.vue'
+import MatchTiles from '../games/GuessMatch.vue'
 
 export const mainRoutes = [
   {
@@ -83,6 +86,23 @@ export const mainRoutes = [
     name: 'NumberGuess',
     component: NumberGuess,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/games/rewards/ticket/catch-aic',
+    name: 'DropAicGame',
+    component: DropAicGame,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/games/win-more/aic/match-tile',
+    name: 'Match Tiles',
+    component: MatchTiles,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/banned',
+    name: 'Banned',
+    component: BannedPage
   },
   {
     path: '/:pathMatch(.*)*',
