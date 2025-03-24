@@ -1,0 +1,227 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="aiccoin.nocorps.org"
+4    android:versionCode="1"
+5    android:versionName="2.222.0" > <!-- Permissions -->
+6    <uses-sdk
+7        android:minSdkVersion="23"
+8        android:targetSdkVersion="35" />
+9    <!-- Existing permissions -->
+10    <uses-permission android:name="android.permission.INTERNET" />
+10-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:4:5-67
+10-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:4:22-64
+11    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+11-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:5:5-79
+11-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:5:22-76
+12
+13    <!-- Add these queries for sharing -->
+14    <queries>
+14-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:8:5-18:15
+15        <intent>
+15-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:9:9-12:18
+16            <action android:name="android.intent.action.SEND" />
+16-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:10:13-65
+16-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:10:21-62
+17
+18            <data android:mimeType="text/plain" />
+18-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:11:13-51
+18-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:11:19-48
+19        </intent>
+20        <intent>
+20-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:13:9-17:18
+21            <action android:name="android.intent.action.VIEW" />
+21-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:14:13-65
+21-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:14:21-62
+22
+23            <category android:name="android.intent.category.BROWSABLE" />
+23-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:15:13-74
+23-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:15:23-71
+24
+25            <data android:scheme="https" />
+25-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:11:13-51
+25-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:16:19-41
+26        </intent>
+27        <intent>
+27-->[:capacitor-browser] C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\node_modules\@capacitor\browser\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:8:9-10:18
+28            <action android:name="android.support.customtabs.action.CustomTabsService" />
+28-->[:capacitor-browser] C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\node_modules\@capacitor\browser\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:9:13-90
+28-->[:capacitor-browser] C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\node_modules\@capacitor\browser\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:9:21-87
+29        </intent>
+30    </queries>
+31
+32    <permission
+32-->[androidx.core:core:1.15.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\5f51ed623ec66baebfa6a053fe8a8b2a\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+33        android:name="aiccoin.nocorps.org.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+33-->[androidx.core:core:1.15.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\5f51ed623ec66baebfa6a053fe8a8b2a\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+34        android:protectionLevel="signature" />
+34-->[androidx.core:core:1.15.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\5f51ed623ec66baebfa6a053fe8a8b2a\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+35
+36    <uses-permission android:name="aiccoin.nocorps.org.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+36-->[androidx.core:core:1.15.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\5f51ed623ec66baebfa6a053fe8a8b2a\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+36-->[androidx.core:core:1.15.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\5f51ed623ec66baebfa6a053fe8a8b2a\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+37
+38    <application
+38-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:20:5-62:19
+39        android:allowBackup="true"
+39-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:21:9-35
+40        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+40-->[androidx.core:core:1.15.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\5f51ed623ec66baebfa6a053fe8a8b2a\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
+41        android:extractNativeLibs="false"
+42        android:icon="@mipmap/ic_launcher"
+42-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:22:9-43
+43        android:label="@string/app_name"
+43-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:23:9-41
+44        android:roundIcon="@mipmap/ic_launcher_round"
+44-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:24:9-54
+45        android:supportsRtl="true"
+45-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:25:9-35
+46        android:theme="@style/AppTheme" >
+46-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:26:9-40
+47        <activity
+47-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:28:9-51:20
+48            android:name="aiccoin.nocorps.org.MainActivity"
+48-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:30:13-41
+49            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation"
+49-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:29:13-140
+50            android:exported="true"
+50-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:34:13-36
+51            android:label="@string/title_activity_main"
+51-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:31:13-56
+52            android:launchMode="singleTask"
+52-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:33:13-44
+53            android:theme="@style/AppTheme.NoActionBarLaunch" >
+53-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:32:13-62
+54            <intent-filter>
+54-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:36:13-39:29
+55                <action android:name="android.intent.action.MAIN" />
+55-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:37:17-69
+55-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:37:25-66
+56
+57                <category android:name="android.intent.category.LAUNCHER" />
+57-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:38:17-77
+57-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:38:27-74
+58            </intent-filter>
+59
+60            <!-- Add this new intent filter for deep links -->
+61            <intent-filter android:autoVerify="true" >
+61-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:42:13-49:29
+61-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:42:28-53
+62                <action android:name="android.intent.action.VIEW" />
+62-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:14:13-65
+62-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:14:21-62
+63
+64                <category android:name="android.intent.category.DEFAULT" />
+64-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:44:17-76
+64-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:44:27-73
+65                <category android:name="android.intent.category.BROWSABLE" />
+65-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:15:13-74
+65-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:15:23-71
+66
+67                <data android:scheme="https" />
+67-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:11:13-51
+67-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:16:19-41
+68                <data android:host="aiccoin.nocorps.org" />
+68-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:11:13-51
+68-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:47:23-57
+69                <data android:host="aiccoin.site" />
+69-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:11:13-51
+69-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:47:23-57
+70            </intent-filter>
+71        </activity>
+72
+73        <provider
+74            android:name="androidx.core.content.FileProvider"
+74-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:54:13-62
+75            android:authorities="aiccoin.nocorps.org.fileprovider"
+75-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:55:13-64
+76            android:exported="false"
+76-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:56:13-37
+77            android:grantUriPermissions="true" >
+77-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:57:13-47
+78            <meta-data
+78-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:58:13-60:64
+79                android:name="android.support.FILE_PROVIDER_PATHS"
+79-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:59:17-67
+80                android:resource="@xml/file_paths" />
+80-->C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\android\app\src\main\AndroidManifest.xml:60:17-51
+81        </provider>
+82
+83        <activity
+83-->[:capacitor-browser] C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\node_modules\@capacitor\browser\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:14:9-18:75
+84            android:name="com.capacitorjs.plugins.browser.BrowserControllerActivity"
+84-->[:capacitor-browser] C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\node_modules\@capacitor\browser\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:15:13-85
+85            android:exported="false"
+85-->[:capacitor-browser] C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\node_modules\@capacitor\browser\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:16:13-37
+86            android:launchMode="singleTask"
+86-->[:capacitor-browser] C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\node_modules\@capacitor\browser\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:17:13-44
+87            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+87-->[:capacitor-browser] C:\Users\Kanagaraj\Desktop\Vue\New folder\aiccoin\node_modules\@capacitor\browser\android\build\intermediates\merged_manifest\release\processReleaseManifest\AndroidManifest.xml:18:13-72
+88
+89        <provider
+89-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\455628e39230ce08b70f281b4ac99c3c\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+90            android:name="androidx.startup.InitializationProvider"
+90-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\455628e39230ce08b70f281b4ac99c3c\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+91            android:authorities="aiccoin.nocorps.org.androidx-startup"
+91-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\455628e39230ce08b70f281b4ac99c3c\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+92            android:exported="false" >
+92-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\455628e39230ce08b70f281b4ac99c3c\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+93            <meta-data
+93-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\455628e39230ce08b70f281b4ac99c3c\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+94                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+94-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\455628e39230ce08b70f281b4ac99c3c\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+95                android:value="androidx.startup" />
+95-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\455628e39230ce08b70f281b4ac99c3c\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+96            <meta-data
+96-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\2086035d7e747a32c2be40e6ed7f404e\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+97                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+97-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\2086035d7e747a32c2be40e6ed7f404e\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+98                android:value="androidx.startup" />
+98-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\2086035d7e747a32c2be40e6ed7f404e\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+99            <meta-data
+99-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+100                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+100-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+101                android:value="androidx.startup" />
+101-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+102        </provider>
+103
+104        <receiver
+104-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+105            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+105-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+106            android:directBootAware="false"
+106-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+107            android:enabled="true"
+107-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+108            android:exported="true"
+108-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+109            android:permission="android.permission.DUMP" >
+109-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+110            <intent-filter>
+110-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+111                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+111-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+111-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+112            </intent-filter>
+113            <intent-filter>
+113-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+114                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+114-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+114-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+115            </intent-filter>
+116            <intent-filter>
+116-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+117                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+117-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+117-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+118            </intent-filter>
+119            <intent-filter>
+119-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+120                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+120-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+120-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Kanagaraj\.gradle\caches\8.11.1\transforms\0f3d68271fd414f74f11a6a9c308b287\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+121            </intent-filter>
+122        </receiver>
+123    </application>
+124
+125</manifest>

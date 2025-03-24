@@ -1,0 +1,1 @@
+import{_ as o,c,a as t,o as a,r as n}from"./index-BrKp1D6B.js";const r={},s={class:"admin-layout"};function _(d,i){const e=n("router-view");return a(),c("div",s,[t(e)])}const l=o(r,[["render",_],["__scopeId","data-v-ac178cc5"]]);export{l as default};
