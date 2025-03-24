@@ -32,8 +32,9 @@
 import { auth, db } from '../firebase';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { ref, onMounted, computed } from 'vue';
-// import Toast from '../components/Toast.vue';
 import Toast from '../components/TostAlert.vue';
+import { Share } from '@capacitor/share';
+import { Browser } from '@capacitor/browser';
 
 export default {
   components: {
@@ -47,7 +48,6 @@ export default {
     const toastCounter = ref(0);
     const userId = auth.currentUser?.uid;
 
-    // Add toast show method
     const showToast = (message, type = 'success') => {
       const id = toastCounter.value++;
       toasts.value.push({ id, message, type });
@@ -56,7 +56,6 @@ export default {
       }, 3000);
     };
 
-    // Fetch current user data
     const fetchUserData = async () => {
       if (!userId) return;
       try {
@@ -72,7 +71,6 @@ export default {
       }
     };
 
-    // Fetch referred users based on referral code
     const fetchReferredUsers = async (referralCode) => {
       if (!referralCode) return;
       try {
@@ -89,13 +87,16 @@ export default {
 
     onMounted(fetchUserData);
 
-    // Generate referral link
     const referralLink = computed(() => {
-      // return user.value ? `https://t.me/AIC_Coin_Bot/AIC/register?ref=${user.value.referralCode}` : '';
-      return user.value ? `${window.location.origin}/register?ref=${user.value.referralCode}` : '';
+      if (!user.value) return '';
+      
+      // Always use production URL
+      const baseUrl = 'https://aiccoin.netlify.app';
+      const refCode = user.value.referralCode;
+      
+      return `${baseUrl}/register?ref=${refCode}`;
     });
 
-    // Copy referral link to clipboard
     const copyReferralLink = () => {
       if (navigator.clipboard) {
         navigator.clipboard.writeText(referralLink.value)
@@ -109,23 +110,31 @@ export default {
       }
     };
 
-    // Share referral link using the Web Share API
-    const shareReferralLink = () => {
-      if (navigator.share) {
-        navigator.share({
-          title: 'Join me on AIC Coin!',
-          text: 'Check out AIC Coin, and use my referral code!',
-          url: referralLink.value,
-        })
-        .then(() => {
-          showToast('Link shared successfully! 🚀', 'success');
-        })
-        .catch((error) => {
-          console.error("Error sharing link:", error);
-          showToast('Failed to share link ❌', 'error');
-        });
-      } else {
-        showToast('Sharing is not supported on your browser 🔒', 'error');
+    const shareReferralLink = async () => {
+      const isCapacitor = window.Capacitor?.isNative;
+      // Always use production URL
+      const baseUrl = 'https://aiccoin.nocorps.org';
+      const shareData = {
+        title: 'Join me on AIC Coin!',
+        text: `Join AIC Coin using my referral code: ${user.value?.referralCode}\n\nDownload the app and start earning today!`,
+        url: `${baseUrl}/register?ref=${user.value?.referralCode}`,
+        dialogTitle: 'Share AIC Coin Referral'
+      };
+
+      try {
+        if (isCapacitor) {
+          await Share.share(shareData);
+        } else if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+          showToast('Link copied to clipboard! 📋', 'success');
+          return;
+        }
+        showToast('Link shared successfully! 🚀', 'success');
+      } catch (error) {
+        console.error('Error sharing:', error);
+        showToast('Failed to share link ❌', 'error');
       }
     };
 
@@ -280,6 +289,23 @@ button:hover {
   max-width: 600px;
 }
 
+.share-btn {
+  background: linear-gradient(145deg, #00ccff, #0ff);
+  color: #1a1a1a;
+  font-weight: 600;
+  border: none;
+  padding: 0.75rem 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.share-btn:hover {
+  background: linear-gradient(145deg, #0ff, #00ccff);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+}
+
 @media (max-width: 768px) {
   .referral {
     padding: 0.75rem;
@@ -319,6 +345,12 @@ button:hover {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
     margin: 0.3rem;
+  }
+
+  .share-btn {
+    width: 100%;
+    justify-content: center;
+    margin: 0.5rem 0;
   }
 }
 </style>

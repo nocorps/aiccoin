@@ -1,28 +1,33 @@
-// Add this code at the top before imports
-if (window.location.hostname === 'aiccoin.nocorps.org') {
-  const currentUrl = new URL(window.location.href);
-  const searchParams = currentUrl.searchParams;
-  const ref = searchParams.get('ref'); // Get referral code if exists
-  const path = currentUrl.pathname; // Get the path
+// Update the redirect logic
+const handleReferral = () => {
+  // Check if running in Capacitor (mobile app)
+  const isCapacitor = window.Capacitor?.isNative;
   
-  // Construct base URL with path
-  let redirectUrl = `https://aiccoin.site${path}`;
-  
-  // Add referral code if present
-  if (ref) {
-    redirectUrl += `?ref=${ref}`;
-  }
-
-  // Add any other query parameters (except ref which we already handled)
-  searchParams.forEach((value, key) => {
-    if (key !== 'ref') {
-      redirectUrl += redirectUrl.includes('?') ? '&' : '?';
-      redirectUrl += `${key}=${value}`;
+  if (!isCapacitor && window.location.hostname === 'aiccoin.nocorps.org') {
+    const currentUrl = new URL(window.location.href);
+    const searchParams = currentUrl.searchParams;
+    const ref = searchParams.get('ref');
+    const path = currentUrl.pathname;
+    
+    let redirectUrl = `https://aiccoin.site${path}`;
+    
+    if (ref) {
+      redirectUrl += `?ref=${ref}`;
     }
-  });
+    
+    searchParams.forEach((value, key) => {
+      if (key !== 'ref') {
+        redirectUrl += redirectUrl.includes('?') ? '&' : '?';
+        redirectUrl += `${key}=${value}`;
+      }
+    });
 
-  window.location.href = redirectUrl;
-}
+    window.location.href = redirectUrl;
+  }
+};
+
+// Call the function before app initialization
+// handleReferral();
 
 import { createApp } from 'vue';
 import App from './App.vue';

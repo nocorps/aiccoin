@@ -232,11 +232,23 @@
         <button type="submit" class="submit-button" :disabled="isSubmitting">Register</button>
       </div>
 
-      <div class="login-link">
+      <!-- <div class="login-link">
         Already have an account?
         <router-link to="/login" class="link">Login here</router-link>
-      </div>
+      </div> -->
     </form>
+  </div>
+
+  <!-- Add this popup component -->
+  <div v-if="showPopup" class="popup-overlay">
+    <div class="popup-content">
+      <h3>Download App</h3>
+      <p>{{ popupMessage }}</p>
+      <div class="popup-buttons">
+        <button @click="handleDownload" class="popup-button confirm">Download Now</button>
+        <button @click="closePopup" class="popup-button cancel">Close</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -373,8 +385,21 @@ export default {
           await updateReferralSystem(referralCode.value, userId, email.value, randomCoinBalance);
         }
         await updateCoinBalance(userId, 1000, 'Welcome bonus');
-        // Redirect after successful registration
-        router.push('/');
+        
+        // Instead of router.push('/')
+        const isAndroid = /android/i.test(navigator.userAgent);
+        const isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent);
+        
+        if (isAndroid) {
+          // Replace with your actual Play Store URL
+          window.location.href = 'https://play.google.com/store/apps/details?id=aiccoin.nocorps.org';
+        } else if (isIOS) {
+          // Replace with your actual App Store URL when you have one
+          window.location.href = 'https://nocorps.org/ios/app/aiccoin/';
+        } else {
+          // For desktop or other devices, show a message or redirect to a download page
+          showDownloadPopup();
+        }
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
           errors.value.push('This email address is already registered. Please login instead.');
@@ -392,6 +417,32 @@ export default {
       }
     };
 
+    const showPopup = ref(false);
+    const popupMessage = ref('');
+
+    const showDownloadPopup = () => {
+      showPopup.value = true;
+      popupMessage.value = 'Please download our mobile app to continue using AIC Coin.';
+    };
+
+    const closePopup = () => {
+      showPopup.value = false;
+    };
+
+    const handleDownload = () => {
+      const isAndroid = /android/i.test(navigator.userAgent);
+      const isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent);
+      
+      if (isAndroid) {
+        window.location.href = 'https://play.google.com/store/apps/details?id=aiccoin.nocorps.org';
+      } else if (isIOS) {
+        window.location.href = 'https://nocorps.org/ios/app/aiccoin/';//apple store id
+      } else {
+        window.location.href = 'https://play.google.com/store/apps/details?id=aiccoin.nocorps.org';
+      }
+      closePopup();
+    };
+
     return {
       name,
       email,
@@ -401,7 +452,11 @@ export default {
       referralCode,
       validateAndRegister, // Changed from register to validateAndRegister
       errors,
-      isSubmitting
+      isSubmitting,
+      showPopup,
+      popupMessage,
+      closePopup,
+      handleDownload
     };
   }
 };
@@ -770,5 +825,83 @@ select.input-field option[value=""] {
 .submit-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.popup-content {
+  background: linear-gradient(145deg, rgba(16, 20, 24, 0.95), rgba(0, 0, 0, 0.9));
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 90%;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  animation: slideUp 0.3s ease;
+}
+
+.popup-content h3 {
+  color: #0ff;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.popup-content p {
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.popup-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.popup-button {
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.popup-button.confirm {
+  background: linear-gradient(45deg, #0ff, #00ccff);
+  color: #000;
+}
+
+.popup-button.cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 </style>

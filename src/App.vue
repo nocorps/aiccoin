@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container safe-area">
     <!-- Only show NavBar for non-admin routes -->
     <NavBar v-if="!isAdminRoute" />
     <main :class="{ 'content': !isAdminRoute, 'admin-content': isAdminRoute }">
@@ -40,23 +40,31 @@ export default {
   background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
 }
 
+/* Add safe area padding */
+.safe-area {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
 .content {
-  padding-bottom: 100px; /* Add padding for the bottom nav */
+  padding-bottom: calc(100px + env(safe-area-inset-bottom)); /* Add safe area to bottom padding */
 }
 
 .admin-content {
-  padding: 0;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
   min-height: 100vh;
   background: #1a1a1a;
 }
 
 @media (max-width: 768px) {
   .content {
-    padding-bottom: 120px; /* Increase padding for mobile screens */
+    padding-bottom: calc(120px + env(safe-area-inset-bottom)); /* Add safe area to mobile padding */
   }
   
   .admin-content {
-    padding: 0;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
   }
 }
 </style>

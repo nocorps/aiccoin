@@ -1,0 +1,9 @@
+{
+  "appId": "aiccoin.nocorps.org",
+  "appName": "AIC Coin",
+  "webDir": "dist",
+  "server": {
+    "url": "https://aiccoin.netlify.app/",
+    "cleartext": true
+  }
+}
