@@ -21,3 +21,22 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+
+# Android specific
+android/.gradle
+android/build/
+android/app/build/
+android/captures/
+android/local.properties
+android/.idea/
+android/*.iml
+android/.DS_Store
+android/app/release/
+android/app/debug/
+android/app/*.apk
+android/app/src/main/assets/public
+
+# Capacitor
+android/app/capacitor.config.json
+android/capacitor.settings.gradle
