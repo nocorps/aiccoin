@@ -1,5 +1,5 @@
 // Add this code at the top before imports
-if (window.location.hostname === 'aiccoin.nocorps.org') {
+if (window.location.hostname === 'aiccoin.nocorps.org' || window.location.hostname === 'aiccoin.site') {
   const currentUrl = new URL(window.location.href);
   const searchParams = currentUrl.searchParams;
   const ref = searchParams.get('ref'); // Get referral code if exists
