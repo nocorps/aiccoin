@@ -6,7 +6,7 @@ if (window.location.hostname === 'aiccoin.nocorps.org') {
   const path = currentUrl.pathname; // Get the path
   
   // Construct base URL with path
-  let redirectUrl = `https://aiccoin.site${path}`;
+  let redirectUrl = `https://aiccoin.netlify.app${path}`;
   
   // Add referral code if present
   if (ref) {
